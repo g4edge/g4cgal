@@ -148,7 +148,8 @@ std::vector<G4SurfaceMeshCGAL*> G4SurfaceMeshCGAL::DecomposeConnected() {
 
     auto sm1 = Surface_mesh(sm);
     int ncompt = CGAL::Polygon_mesh_processing::connected_components(sm1,fccmap);
+#ifdef G4CGAL_DEBUG
     G4cout << "Components " << ncompt << G4endl;
-
+#endif
     return std::vector<G4SurfaceMeshCGAL*>();
 }

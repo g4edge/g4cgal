@@ -56,8 +56,8 @@
 
 #include "G4GDMLParser.hh"
 
-//#include "G4BooleanProcessorCGAL.hh"
-//#include "G4BooleanSolid.hh"
+#include "G4BooleanProcessorCGAL.hh"
+#include "G4BooleanSolid.hh"
 
 void print_aux(const G4GDMLAuxListType* auxInfoList, G4String prepend="|")
 {
@@ -79,7 +79,7 @@ void print_aux(const G4GDMLAuxListType* auxInfoList, G4String prepend="|")
 
 int main(int argc,char **argv)
 {
-   //G4BooleanSolid::SetExternalBooleanProcessor(new G4BooleanProcessorCGAL());
+   G4BooleanSolid::SetExternalBooleanProcessor(new G4BooleanProcessorCGAL());
 
    G4cout << G4endl;
    G4cout << "Usage: load_gdml <intput_gdml_file:mandatory>"
