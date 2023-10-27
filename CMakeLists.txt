@@ -44,7 +44,12 @@ target_link_libraries(g4cgal ${Geant4_LIBRARIES} CGAL::CGAL)
 
 file(GLOB LoadGdmlSources ${PROJECT_SOURCE_DIR}/test/load_gdml/*cc)
 file(GLOB LoadGdmlHeaders ${PROJECT_SOURCE_DIR}/test/load_gdml/*hh)
-
 add_executable(load_gdml ${LoadGdmlSources} ${LoadGdmlHeaders})
 target_compile_options(load_gdml PRIVATE -Werror)
 target_link_libraries(load_gdml ${Geant4_LIBRARIES} CGAL::CGAL g4cgal)
+
+file(GLOB HalfSpaceSources ${PROJECT_SOURCE_DIR}/test/half_space/*cc)
+file(GLOB HalfSpaceHeaders ${PROJECT_SOURCE_DIR}/test/half_space/*hh)
+add_executable(half_space ${HalfSpaceSources} ${HalfSpaceHeaders})
+target_compile_options(half_space PRIVATE -Werror)
+target_link_libraries(half_space ${Geant4_LIBRARIES} CGAL::CGAL g4cgal)
