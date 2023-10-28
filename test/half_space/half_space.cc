@@ -4,39 +4,59 @@
 #include "G4ThreeVector.hh"
 #include "G4ios.hh"
 
+#include "G4BooleanProcessorCGAL.hh"
+#include "G4BooleanSolid.hh"
+#include "G4GDMLParser.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4RunManagerFactory.hh"
+#include "G4TransportationManager.hh"
+#include "G4Types.hh"
+#include "G4UIExecutive.hh"
+#include "G4UImanager.hh"
+#include "G4VisExecutive.hh"
+
+#include "FTFP_BERT.hh"
+#include "CGALActionInitialization.hh"
+#include "CGALDetectorConstruction.hh"
+#include "CGALPrimaryGeneratorAction.hh"
+
+#include <vector>
+
 int main(int argc, char** argv)
 {
-    auto p1 = new G4HalfSpacePlane(G4ThreeVector(1,0,0),G4ThreeVector(1,0,0));
-    auto p2 = new G4HalfSpacePlane(G4ThreeVector(-1,0,0),G4ThreeVector(-1,0,0));
-    auto p3 = new G4HalfSpacePlane(G4ThreeVector(0,1,0),G4ThreeVector(0,1,0));
-    auto p4 = new G4HalfSpacePlane(G4ThreeVector(0,-1,0),G4ThreeVector(0,-1,0));
-    auto p5 = new G4HalfSpacePlane(G4ThreeVector(0,0,1),G4ThreeVector(0,0,1));
-    auto p6 = new G4HalfSpacePlane(G4ThreeVector(0,0,-1),G4ThreeVector(0,0,-1));
+    auto* runManager = G4RunManagerFactory::CreateRunManager();
 
-    auto z = new G4HalfSpaceZone();
-    z->AddIntersection(p1);
-    z->AddIntersection(p2);
-    z->AddIntersection(p3);
-    z->AddIntersection(p4);
-    z->AddIntersection(p5);
-    z->AddIntersection(p6);
+    runManager->SetUserInitialization(new CGALDetectorConstruction());
+    runManager->SetUserInitialization(new FTFP_BERT);
+    runManager->SetUserInitialization(new CGALActionInitialization());
 
-    auto hss = new G4HalfSpaceSolid("hsSolid");
-    hss->addZone(z);
+    runManager->Initialize();
 
-    auto inside = z->Inside(G4ThreeVector(0,0,0));
-    auto distance1 =  z->Distance(G4ThreeVector(0,0,0));
-    auto distance2 = z->Distance(G4ThreeVector(0,0,0),G4ThreeVector(1, 1,0));
-    G4cout << inside << " " << distance1 << " " << distance2 << G4endl;
+    // Initialize visualization
+    G4VisManager* visManager = new G4VisExecutive;
+    visManager->Initialize();
 
-    G4cout << "Inside> for in " << hss->Inside(G4ThreeVector(0.9,0,0)) << G4endl;
-    G4cout << "Inside> for surface " << hss->Inside(G4ThreeVector(1.0,0,0)) << G4endl;
-    G4cout << "Inside> for out " << hss->Inside(G4ThreeVector(1.1,0,0)) << G4endl;
+    // Get the pointer to the User Interface manager
+    G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-    G4cout << "Distance to in> for in " << hss->DistanceToIn(G4ThreeVector(0,0,0)) << G4endl;
-    G4cout << "Distance to in> for out " << hss->DistanceToIn(G4ThreeVector(2,0,0)) << G4endl;
+    runManager->BeamOn(0);
 
-    G4cout << "Distance to out> for in " << hss->DistanceToOut(G4ThreeVector(0,0,0)) << G4endl;
-    G4cout << "Distance to out> for out " << hss->DistanceToOut(G4ThreeVector(2,0,0)) << G4endl;
+    if (argc == 4)  // batch mode
+    {
+        G4String command = "/control/execute ";
+        G4String fileName = argv[3];
+        UImanager->ApplyCommand(command + fileName);
+    }
+    else  // interactive mode
+    {
+        G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+        UImanager->ApplyCommand("/control/execute vis.mac");
+        ui->SessionStart();
+        delete ui;
+    }
 
+    delete visManager;
+    delete runManager;
+
+    return 0;
 }
