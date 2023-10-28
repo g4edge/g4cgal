@@ -17,11 +17,9 @@ G4bool G4HalfSpaceZone::Inside(const G4ThreeVector& p) const {
     for(auto op : _half_spaces) {
         if (op.first == intersection) {
             bInside = bInside & op.second->Inside(p);
-            // G4cout << "intersection " << op.second->Inside(p) << G4endl;
         }
         else if (op.first == subtraction) {
             bInside = bInside &! op.second->Inside(p);
-            // G4cout << "subtraction " << !op.second->Inside(p) << G4endl;
         }
     }
     return bInside;
@@ -49,6 +47,17 @@ G4double G4HalfSpaceZone::Distance(const G4ThreeVector& p, const G4ThreeVector& 
     return minDist;
 }
 Nef_polyhedron_3 G4HalfSpaceZone::GetNefPolyhedron() const {
-    return Nef_polyhedron_3(Plane_3(Point_3(0, 0, 0),
-                                    Vector_3(0, 0, 0)));
+
+    Nef_polyhedron_3 nef(Nef_polyhedron_3::COMPLETE);
+
+    for(auto op : _half_spaces) {
+        if(op.first == intersection) {
+            nef *= op.second->GetNefPolyhedron();
+        }
+        else if(op.first == subtraction) {
+            nef -= op.second->GetNefPolyhedron();
+        }
+    }
+
+    return nef;
 }

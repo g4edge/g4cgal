@@ -1,10 +1,17 @@
 #include "G4SurfaceMeshCGAL.hh"
 
 #include "G4Polyhedron.hh"
+#include "G4TessellatedSolid.hh"
+#include "G4TriangularFacet.hh"
 
 #include <CGAL/Polygon_mesh_processing/corefinement.h>
+#include <CGAL/boost/graph/helpers.h>
 
-G4SurfaceMeshCGAL::G4SurfaceMeshCGAL() : G4VSurfaceMesh() {}
+#include <vector>
+
+G4SurfaceMeshCGAL::G4SurfaceMeshCGAL() : G4VSurfaceMesh() {
+    sm = Surface_mesh();
+}
 
 G4SurfaceMeshCGAL::G4SurfaceMeshCGAL(G4SurfaceMeshCGAL& smIn) : G4VSurfaceMesh()
 {
@@ -16,12 +23,112 @@ G4SurfaceMeshCGAL::G4SurfaceMeshCGAL(G4SurfaceMeshCGAL* smIn) : G4VSurfaceMesh()
   sm = Surface_mesh(smIn->sm);
 }
 
+G4SurfaceMeshCGAL::G4SurfaceMeshCGAL(Surface_mesh* smIn) {
+  sm = Surface_mesh(*smIn);
+}
+
+G4SurfaceMeshCGAL::G4SurfaceMeshCGAL(Nef_polyhedron_3_ECER* nefIn) {
+    Polyhedron_3_ECER phECER;
+    Surface_mesh_3_ECER smECER;
+    nefIn->convert_to_polyhedron(phECER);
+    CGAL::copy_face_graph(phECER, smECER);
+    fill(smECER);
+}
+
+G4SurfaceMeshCGAL::G4SurfaceMeshCGAL(Nef_polyhedron_3_ECER& nefIn) {
+    Polyhedron_3_ECER phECER;
+    nefIn.convert_to_polyhedron(phECER);
+    Surface_mesh_3_ECER smECER;
+    CGAL::copy_face_graph(phECER, smECER);
+    fill(smECER);
+}
+
 G4SurfaceMeshCGAL::~G4SurfaceMeshCGAL() {}
 
 void G4SurfaceMeshCGAL::fill(G4Polyhedron* polyIn)
 {
   G4VSurfaceMesh::fill(polyIn);
   CGAL::Polygon_mesh_processing::triangulate_faces(sm);
+}
+
+void G4SurfaceMeshCGAL::fill(Polyhedron_3_ECER& phIn) {
+    Surface_mesh_3_ECER smECER;
+    CGAL::copy_face_graph(phIn, smECER);
+    fill(smECER);
+}
+
+void G4SurfaceMeshCGAL::fill(Surface_mesh_3_ECER& smIn)
+{
+    Point_3_ECER p;
+    for (Surface_mesh_3_ECER::Vertex_index vd : smIn.vertices()) {
+        p = smIn.point(vd);
+        AddVertex(CGAL::to_double(p.x()),
+                  CGAL::to_double(p.y()),
+                  CGAL::to_double(p.z()));
+    }
+
+    int iCount = 0;
+    for (Surface_mesh_3_ECER::Face_index fd : smIn.faces()) {
+        std::vector<unsigned int> cell;
+
+        for (Surface_mesh_3_ECER::Halfedge_index hd :
+                CGAL::halfedges_around_face(smIn.halfedge(fd), smIn)) {
+            cell.push_back((unsigned int)smIn.source(hd));
+        }
+
+        if (cell.size() == 3) {
+            AddFace(Surface_mesh_3_ECER::Vertex_index((size_t)cell[0]),
+                    Surface_mesh_3_ECER::Vertex_index((size_t)cell[1]),
+                    Surface_mesh_3_ECER::Vertex_index((size_t)cell[2]));
+        } else if (cell.size() == 4) {
+            AddFace(Surface_mesh_3_ECER::Vertex_index((size_t)cell[0]),
+                    Surface_mesh_3_ECER::Vertex_index((size_t)cell[1]),
+                    Surface_mesh_3_ECER::Vertex_index((size_t)cell[2]),
+                    Surface_mesh_3_ECER::Vertex_index((size_t)cell[3]));
+        }
+
+        ++iCount;
+    }
+}
+
+G4TessellatedSolid* G4SurfaceMeshCGAL::GetG4TessellatedSolid() {
+    G4TessellatedSolid *ts = new G4TessellatedSolid();
+
+    std::vector<G4ThreeVector> tvVertices;
+
+    for (auto iV=0; iV<this->NumberOfVertices(); iV++) {
+        auto v = this->GetVertex(iV);
+        tvVertices.push_back(G4ThreeVector(v[0],v[1],v[2]));
+    }
+
+    for (auto iF=0; iF<this->NumberOfFaces(); iF++) {
+        auto face = GetFace(iF);
+
+        G4VFacet *facet = new G4TriangularFacet(tvVertices[face[0]],
+                                                tvVertices[face[1]],
+                                                tvVertices[face[2]],
+                                                G4FacetVertexType::ABSOLUTE);
+        ts->AddFacet(facet);
+    }
+
+    return ts;
+
+}
+
+G4Polyhedron* G4SurfaceMeshCGAL::GetG4Polyhedron() {
+    G4Polyhedron *poly = new G4Polyhedron(NumberOfVertices(), NumberOfFaces());
+
+    for(G4int iVert = 0; iVert< NumberOfVertices();iVert++) {
+        auto vert = GetVertex(iVert);
+        poly->SetVertex(iVert+1,G4Point3D(vert[0],vert[1],vert[2]));
+    }
+
+    for(G4int iFace = 0; iFace< NumberOfFaces(); iFace++) {
+        auto face = GetFace(iFace);
+        poly->SetFacet(iFace+1, face[0]+1, face[1]+1, face[2]+1);
+    }
+
+    return poly;
 }
 
 G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::Subtraction(G4SurfaceMeshCGAL* s1)

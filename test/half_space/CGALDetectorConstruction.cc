@@ -45,12 +45,12 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
                                        false);
 
 
-    auto p1 = new G4HalfSpacePlane(G4ThreeVector(1,0,0),G4ThreeVector(1,0,0));
-    auto p2 = new G4HalfSpacePlane(G4ThreeVector(-1,0,0),G4ThreeVector(-1,0,0));
-    auto p3 = new G4HalfSpacePlane(G4ThreeVector(0,1,0),G4ThreeVector(0,1,0));
-    auto p4 = new G4HalfSpacePlane(G4ThreeVector(0,-1,0),G4ThreeVector(0,-1,0));
-    auto p5 = new G4HalfSpacePlane(G4ThreeVector(0,0,1),G4ThreeVector(0,0,1));
-    auto p6 = new G4HalfSpacePlane(G4ThreeVector(0,0,-1),G4ThreeVector(0,0,-1));
+    auto p1 = new G4HalfSpacePlane(G4ThreeVector(25*mm,0,0),G4ThreeVector(1,0,0));
+    auto p2 = new G4HalfSpacePlane(G4ThreeVector(-25*mm,0,0),G4ThreeVector(-1,0,0));
+    auto p3 = new G4HalfSpacePlane(G4ThreeVector(0,25*mm,0),G4ThreeVector(0,1,0));
+    auto p4 = new G4HalfSpacePlane(G4ThreeVector(0,-25*mm,0),G4ThreeVector(0,-1,0));
+    auto p5 = new G4HalfSpacePlane(G4ThreeVector(0,0,25*mm),G4ThreeVector(0,0,1));
+    auto p6 = new G4HalfSpacePlane(G4ThreeVector(0,0,-25*mm),G4ThreeVector(0,0,-1));
 
     auto z = new G4HalfSpaceZone();
     z->AddIntersection(p1);
@@ -77,6 +77,20 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
 
     G4cout << "Distance to out> for in " << hss->DistanceToOut(G4ThreeVector(0,0,0)) << G4endl;
     G4cout << "Distance to out> for out " << hss->DistanceToOut(G4ThreeVector(2,0,0)) << G4endl;
+
+    auto logicHSS = new G4LogicalVolume(hss,
+                                          env_mat,
+                                          "hss");
+
+    auto physHSS = new G4PVPlacement(nullptr,
+                                     G4ThreeVector(),
+                                     logicHSS,
+                                     "physHSS",
+                                      logicWorld,
+                                      //nullptr,
+                                     false,
+                                     0,
+                                     false);
 
     return physWorld;
 }

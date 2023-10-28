@@ -31,9 +31,9 @@ CGALPrimaryGeneratorAction::~CGALPrimaryGeneratorAction()
 
 void CGALPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  G4ThreeVector v(-1, 0, 0.0);
+  G4ThreeVector v(1, 0, 0);
 
-  fParticleGun->SetParticlePosition(G4ThreeVector(4.5 * m, 0.999 * m, 0 * m));
+  fParticleGun->SetParticlePosition(G4ThreeVector(-10 * m, 0 * m, 0 * m));
   fParticleGun->SetParticleMomentumDirection(v);
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }

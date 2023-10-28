@@ -1,4 +1,6 @@
 #include "G4HalfSpaceSolid.hh"
+#include "G4SurfaceMeshCGAL.hh"
+#include "G4VSceneHandler.hh"
 
 G4HalfSpaceSolid::G4HalfSpaceSolid() : G4VSolid("") {};
 G4HalfSpaceSolid::G4HalfSpaceSolid(const char *nameIn) : G4VSolid(nameIn) {};
@@ -30,15 +32,16 @@ EInside G4HalfSpaceSolid::Inside(const G4ThreeVector& p) const {
         minDist = std::min(d,minDist);
     }
 
-    // G4cout << "G4HalfSpace::Inside> minDist " << minDist << G4endl;
-
     if (minDist < -kCarTolerance/2.0) {
+        G4cout << "G4HalfSpaceSolid::Inside(" << p << ") inside" << G4endl;
         return kInside;
     }
     else if (fabs(minDist) < kCarTolerance/2.0) {
+        G4cout << "G4HalfSpaceSolid::Inside(" << p << ") surface" << G4endl;
         return kSurface;
     }
     else {
+        G4cout << "G4HalfSpaceSolid::Inside(" << p << ") outside" << G4endl;
         return kOutside;
     }
 }
@@ -56,6 +59,7 @@ G4double G4HalfSpaceSolid::DistanceToIn(const G4ThreeVector& p,
             minDist = d;
         }
     }
+    G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << "," << v << ") " << fabs(minDist) << G4endl;
     return fabs(minDist);
 }
 
@@ -67,6 +71,7 @@ G4double G4HalfSpaceSolid::DistanceToIn(const G4ThreeVector& p) const {
             minDist = d;
         }
     }
+    G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << ") " << fabs(minDist) << G4endl;
     return fabs(minDist);
 }
 
@@ -82,6 +87,7 @@ G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p,
             minDist = d;
         }
     }
+    G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << "," << v << ") " << fabs(minDist) << G4endl;
     return fabs(minDist);
 }
 
@@ -93,6 +99,8 @@ G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p) const {
             minDist = d;
         }
     }
+    G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << fabs(minDist) << G4endl;
+
     return fabs(minDist);
 }
 
@@ -105,5 +113,16 @@ std::ostream& G4HalfSpaceSolid::StreamInfo(std::ostream& os) const {
 }
 
 void G4HalfSpaceSolid::DescribeYourselfTo(G4VGraphicsScene& scene) const {
+    Nef_polyhedron_3 nef(Nef_polyhedron_3::EMPTY);
+
+    for(auto z : _zones) {
+        nef += z->GetNefPolyhedron();
+    }
+
+    G4SurfaceMeshCGAL sm(nef);
+    auto ph = sm.GetG4Polyhedron();
+
+    scene.AddPrimitive(*ph);
+
     return;
 }

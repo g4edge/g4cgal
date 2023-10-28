@@ -15,7 +15,7 @@ typedef CGAL::Nef_polyhedron_3<Kernel_ECER> Nef_polyhedron_3;
 typedef Kernel_ECER::Point_3 Point_3;
 typedef Kernel_ECER::Vector_3 Vector_3;
 typedef Kernel_ECER::Plane_3 Plane_3;
-typedef CGAL::Polyhedron_3<Kernel_ECER> Polyhedron_3;
+typedef Kernel_ECER::Direction_3 Direction_3;
 
 class G4VHalfSpace {
 
