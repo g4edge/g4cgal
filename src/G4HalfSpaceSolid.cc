@@ -26,11 +26,17 @@ G4bool G4HalfSpaceSolid::CalculateExtent(const EAxis pAxis,
 
 EInside G4HalfSpaceSolid::Inside(const G4ThreeVector& p) const {
 
+    G4cout << "G4HalfSpaceSolid::Inside(" << p << ")======================" << G4endl;
+
     G4double minDist = kInfinity;
     for(auto z : _zones) {
         auto d = z->Distance(p);
-        minDist = std::min(d,minDist);
+        if (fabs(d) < fabs(minDist))
+            minDist = d;
     }
+
+    G4cout << "G4HalfSpaceSolid::Inside(" << p << ") minDist " << minDist << G4endl;
+
 
     if (minDist < -kCarTolerance/2.0) {
         G4cout << "G4HalfSpaceSolid::Inside(" << p << ") inside" << G4endl;
@@ -95,7 +101,6 @@ G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p) const {
     for(auto z : _zones) {
         auto d = z->DistanceToOut(p);
         G4cout << "G4HalfSpaceSolid::DistanceToOut> zone min dist " << d << G4endl;
-
         minDist = std::min(d,minDist);
     }
     G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << ") " << fabs(minDist) << G4endl;

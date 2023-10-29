@@ -16,7 +16,7 @@ CGALPrimaryGeneratorAction::CGALPrimaryGeneratorAction()
 
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
-  fParticleGun->SetParticleDefinition(particleTable->FindParticle(particleName = "e-"));
+  fParticleGun->SetParticleDefinition(particleTable->FindParticle(particleName = "geantino"));
   fParticleGun->SetParticleEnergy(10 * GeV);
 }
 
