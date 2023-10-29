@@ -30,4 +30,6 @@ public:
     virtual G4double DistanceToOut(const G4ThreeVector& p, const G4ThreeVector& v) const = 0;
 
     virtual Nef_polyhedron_3 GetNefPolyhedron() const = 0;
+
+    static void QuadraticSolve(G4double a, G4double b, G4double c, G4int &nSoln, G4double &x1, G4double &x2);
 };
