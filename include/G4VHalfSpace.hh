@@ -24,7 +24,10 @@ public:
     ~G4VHalfSpace();
     virtual G4bool   Inside(const G4ThreeVector& p) const = 0;
     virtual G4double Distance(const G4ThreeVector& p) const = 0;
-    virtual G4double Distance(const G4ThreeVector& p, const G4ThreeVector& v) const = 0;
+    virtual G4double DistanceToIn(const G4ThreeVector& p) const = 0;
+    virtual G4double DistanceToOut(const G4ThreeVector& p) const = 0;
+    virtual G4double DistanceToIn(const G4ThreeVector& p, const G4ThreeVector& v) const = 0;
+    virtual G4double DistanceToOut(const G4ThreeVector& p, const G4ThreeVector& v) const = 0;
 
     virtual Nef_polyhedron_3 GetNefPolyhedron() const = 0;
 };

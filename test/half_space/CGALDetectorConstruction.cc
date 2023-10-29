@@ -8,6 +8,7 @@
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4BoxInstrumented.hh"
 
 G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     //////////////////////////////
@@ -18,13 +19,13 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     // Envelope parameters
 
     G4double env_sizeXY = 20*cm, env_sizeZ = 30*cm;
-    G4Material* env_mat = nist->FindOrBuildMaterial("G4_WATER");
+    G4Material* env_mat = nist->FindOrBuildMaterial("G4_Fe");
 
     //////////////////////////////
     // World
     G4double world_sizeXY = 1.2*env_sizeXY;
     G4double world_sizeZ  = 1.2*env_sizeZ;
-    G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
+    G4Material* world_mat = nist->FindOrBuildMaterial("G4_Galactic");
 
     auto solidWorld = new G4Box("World",
                                 0.5 * world_sizeXY,
@@ -64,8 +65,8 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     hss->addZone(z);
 
     auto inside = z->Inside(G4ThreeVector(0,0,0));
-    auto distance1 =  z->Distance(G4ThreeVector(0,0,0));
-    auto distance2 = z->Distance(G4ThreeVector(0,0,0),G4ThreeVector(1, 1,0));
+    auto distance1 =  z->DistanceToIn(G4ThreeVector(0,0,0));
+    auto distance2 = z->DistanceToIn(G4ThreeVector(0,0,0),G4ThreeVector(1, 1,0));
     G4cout << inside << " " << distance1 << " " << distance2 << G4endl;
 
     G4cout << "Inside> for in " << hss->Inside(G4ThreeVector(0.9,0,0)) << G4endl;
@@ -77,6 +78,8 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
 
     G4cout << "Distance to out> for in " << hss->DistanceToOut(G4ThreeVector(0,0,0)) << G4endl;
     G4cout << "Distance to out> for out " << hss->DistanceToOut(G4ThreeVector(2,0,0)) << G4endl;
+
+    auto hss1 = new G4BoxInstrumented("World",25*mm,25*mm,25*mm);
 
     auto logicHSS = new G4LogicalVolume(hss,
                                           env_mat,

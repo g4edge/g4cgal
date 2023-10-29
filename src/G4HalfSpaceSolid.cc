@@ -26,7 +26,7 @@ G4bool G4HalfSpaceSolid::CalculateExtent(const EAxis pAxis,
 
 EInside G4HalfSpaceSolid::Inside(const G4ThreeVector& p) const {
 
-    G4double minDist = 1e99;
+    G4double minDist = kInfinity;
     for(auto z : _zones) {
         auto d = z->Distance(p);
         minDist = std::min(d,minDist);
@@ -52,22 +52,22 @@ G4ThreeVector G4HalfSpaceSolid::SurfaceNormal(const G4ThreeVector& p) const {
 
 G4double G4HalfSpaceSolid::DistanceToIn(const G4ThreeVector& p,
                                         const G4ThreeVector& v) const {
-    G4double minDist = 1e99;
+    G4double minDist = kInfinity;
     for(auto z : _zones) {
-        auto d = z->Distance(p,v);
-        if (fabs(d) < minDist && d > 0) {
-            minDist = d;
-        }
+        auto d = z->DistanceToIn(p,v);
+        G4cout << "G4HalfSpaceSolid::DistanceToIn> zone min dist " << d << G4endl;
+        minDist = std::min(d,minDist);
     }
     G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << "," << v << ") " << fabs(minDist) << G4endl;
     return fabs(minDist);
 }
 
 G4double G4HalfSpaceSolid::DistanceToIn(const G4ThreeVector& p) const {
-    G4double minDist = 1e99;
+    G4double minDist = kInfinity;
     for(auto z : _zones) {
-        auto d = z->Distance(p);
-        if (fabs(d) < minDist && d > 0) {
+        auto d = z->DistanceToIn(p);
+        G4cout << "G4HalfSpaceSolid::DistanceToIn> zone min dist " << d << G4endl;
+        if (d < minDist) {
             minDist = d;
         }
     }
@@ -80,26 +80,25 @@ G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p,
                                          const G4bool calcNorm,
                                          G4bool* validNorm,
                                          G4ThreeVector* n) const {
-    G4double minDist = 1e99;
+    G4double minDist = kInfinity;
     for(auto z : _zones) {
-        auto d = z->Distance(p,v);
-        if (fabs(d) < minDist && d < 0) {
-            minDist = d;
-        }
+        auto d = z->DistanceToOut(p,v);
+        G4cout << "G4HalfSpaceSolid::DistanceToOut> zone min dist " << d << G4endl;
+        minDist = std::min(d,minDist);
     }
     G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << "," << v << ") " << fabs(minDist) << G4endl;
     return fabs(minDist);
 }
 
 G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p) const {
-    G4double minDist = 1e99;
+    G4double minDist = kInfinity;
     for(auto z : _zones) {
-        auto d = z->Distance(p);
-        if (fabs(d) < minDist && d < 0) {
-            minDist = d;
-        }
+        auto d = z->DistanceToOut(p);
+        G4cout << "G4HalfSpaceSolid::DistanceToOut> zone min dist " << d << G4endl;
+
+        minDist = std::min(d,minDist);
     }
-    G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << fabs(minDist) << G4endl;
+    G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << ") " << fabs(minDist) << G4endl;
 
     return fabs(minDist);
 }
