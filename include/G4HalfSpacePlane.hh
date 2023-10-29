@@ -1,7 +1,7 @@
+#pragma once
+
 #include "G4ThreeVector.hh"
-
 #include "G4VHalfSpace.hh"
-
 
 class G4HalfSpacePlane : public G4VHalfSpace {
 public:

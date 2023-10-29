@@ -1,3 +1,5 @@
+#pragma once
+
 #include "G4VSolid.hh"
 #include "G4HalfSpaceZone.hh"
 
