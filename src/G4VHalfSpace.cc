@@ -5,7 +5,7 @@ G4VHalfSpace::G4VHalfSpace() {}
 G4VHalfSpace::~G4VHalfSpace() {}
 
 void G4VHalfSpace::QuadraticSolve(G4double a, G4double b, G4double c,
-                                  G4int &nSoln, G4double &x1, G4double &x2) {
+                                  G4int &nSoln, G4double &x1, G4double &x2)  {
     nSoln = 0;
     x1 = 0;
     x2 = 0;

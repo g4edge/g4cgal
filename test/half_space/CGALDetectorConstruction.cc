@@ -2,9 +2,12 @@
 
 #include "G4NistManager.hh"
 #include "G4Box.hh"
-#include "G4HalfSpaceSolid.hh"
+
 #include "G4HalfSpacePlane.hh"
+#include "G4HalfSpaceSphere.hh"
 #include "G4HalfSpaceZone.hh"
+#include "G4HalfSpaceSolid.hh"
+
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
@@ -52,14 +55,24 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     auto p4 = new G4HalfSpacePlane(G4ThreeVector(0,-25*mm,0),G4ThreeVector(0,-1,0));
     auto p5 = new G4HalfSpacePlane(G4ThreeVector(0,0,25*mm),G4ThreeVector(0,0,1));
     auto p6 = new G4HalfSpacePlane(G4ThreeVector(0,0,-25*mm),G4ThreeVector(0,0,-1));
+    auto p7 = new G4HalfSpacePlane(G4ThreeVector(0,12.5,12.5), G4ThreeVector(0,1,1));
+
+    auto s1 = new G4HalfSpaceSphere(G4ThreeVector(0,0,0), 25*mm);
 
     auto z = new G4HalfSpaceZone();
+#if 1
     z->AddIntersection(p1);
     z->AddIntersection(p2);
     z->AddIntersection(p3);
     z->AddIntersection(p4);
     z->AddIntersection(p5);
     z->AddIntersection(p6);
+    z->AddSubtraction(p7);
+#endif
+
+#if 0
+    z->AddIntersection(s1);
+#endif
 
     auto hss = new G4HalfSpaceSolid("hsSolid");
     hss->addZone(z);
@@ -82,8 +95,8 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     auto hss1 = new G4BoxInstrumented("World",25*mm,25*mm,25*mm);
 
     auto logicHSS = new G4LogicalVolume(hss,
-                                          env_mat,
-                                          "hss");
+                                        env_mat,
+                                        "hss");
 
     auto physHSS = new G4PVPlacement(nullptr,
                                      G4ThreeVector(),

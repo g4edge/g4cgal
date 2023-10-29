@@ -1,0 +1,33 @@
+inline
+G4double G4BoxInstrumented::GetXHalfLength() const
+{
+  return fDx;
+}
+
+inline    
+G4double G4BoxInstrumented::GetYHalfLength() const
+{
+  return fDy;
+}
+
+inline
+G4double G4BoxInstrumented::GetZHalfLength() const
+{
+  return fDz;
+}
+
+inline
+G4double G4BoxInstrumented::GetCubicVolume()
+{
+  if(fCubicVolume != 0.) {;}
+  else   { fCubicVolume = 8*fDx*fDy*fDz; }
+  return fCubicVolume;
+}
+
+inline
+G4double G4BoxInstrumented::GetSurfaceArea()
+{
+  if(fSurfaceArea != 0.) {;}
+  else   { fSurfaceArea = 8*(fDx*fDy+fDx*fDz+fDy*fDz); }
+  return fSurfaceArea;
+}
