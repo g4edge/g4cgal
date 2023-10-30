@@ -77,7 +77,12 @@ G4double G4HalfSpaceSolid::DistanceToIn(const G4ThreeVector& p) const {
         }
     }
     G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << ") " << fabs(sdf) << G4endl;
-    return fabs(sdf);
+    if (sdf >= 0) {
+        return fabs(sdf);
+    }
+    else {
+        return kInfinity;
+    }
 }
 
 G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p,
@@ -92,7 +97,12 @@ G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p,
         sdf = std::min(d,sdf);
     }
     G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << "," << v << ") " << fabs(sdf) << G4endl;
-    return fabs(sdf);
+    if (sdf <=0) {
+        return fabs(sdf);
+    }
+    else {
+        return kInfinity;
+    }
 }
 
 G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p) const {
