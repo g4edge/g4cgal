@@ -20,28 +20,8 @@ G4double G4HalfSpaceSphere::Distance(const G4ThreeVector&p) const {
     return (p - _p0).mag() - _r;
 }
 
-G4double G4HalfSpaceSphere::DistanceToIn(const G4ThreeVector& p) const {
-    G4double dist = Distance(p);
-    if (dist > 0) {
-        return dist;
-    }
-    else {
-        return 9e99;
-    }
-}
-
-G4double G4HalfSpaceSphere::DistanceToOut(const G4ThreeVector& p) const {
-    G4double dist = Distance(p);
-    if (dist < 0) {
-        return fabs(dist);
-    }
-    else {
-        return 9e99;
-    }
-}
-
-G4double G4HalfSpaceSphere::DistanceToIn(const G4ThreeVector& p,
-                              const G4ThreeVector& d) const {
+G4double G4HalfSpaceSphere::Distance(const G4ThreeVector& p,
+                                     const G4ThreeVector& d) const {
     // v = lambda d + p
     // |(v - p0)| = r
     // | lambda d + p - p0| = r
@@ -63,21 +43,6 @@ G4double G4HalfSpaceSphere::DistanceToIn(const G4ThreeVector& p,
     G4cout << lambda1 << G4endl;
     return lambda1;
 }
-
-G4double G4HalfSpaceSphere::DistanceToOut(const G4ThreeVector& p,
-                               const G4ThreeVector& d) const {
-    auto a = d.dot(d);
-    auto b = 2*d.dot(p-_p0);
-    auto c = (p-_p0).dot(p-_p0) - _r*_r;
-
-    G4int nSoln = 0;
-    G4double lambda1 = 0;
-    G4double lambda2 = 0;
-    G4VHalfSpace::QuadraticSolve(a,b,c,nSoln, lambda1, lambda2);
-
-    return lambda2;
-}
-
 
 Nef_polyhedron_3 G4HalfSpaceSphere::GetNefPolyhedron() const {
     return Nef_polyhedron_3();

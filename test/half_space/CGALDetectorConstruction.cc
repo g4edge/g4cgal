@@ -55,7 +55,7 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     auto p4 = new G4HalfSpacePlane(G4ThreeVector(0,-25*mm,0),G4ThreeVector(0,-1,0));
     auto p5 = new G4HalfSpacePlane(G4ThreeVector(0,0,25*mm),G4ThreeVector(0,0,1));
     auto p6 = new G4HalfSpacePlane(G4ThreeVector(0,0,-25*mm),G4ThreeVector(0,0,-1));
-    auto p7 = new G4HalfSpacePlane(G4ThreeVector(0,0,0), G4ThreeVector(1,1,0));
+    auto p7 = new G4HalfSpacePlane(G4ThreeVector(0,-1*mm,-1*mm), G4ThreeVector(0,1,1));
 
     auto s1 = new G4HalfSpaceSphere(G4ThreeVector(0,0,0), 25*mm);
 
@@ -76,21 +76,6 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
 
     auto hss = new G4HalfSpaceSolid("hsSolid");
     hss->addZone(z);
-
-    auto inside = z->Inside(G4ThreeVector(0,0,0));
-    auto distance1 =  z->DistanceToIn(G4ThreeVector(0,0,0));
-    auto distance2 = z->DistanceToIn(G4ThreeVector(0,0,0),G4ThreeVector(1, 1,0));
-    G4cout << inside << " " << distance1 << " " << distance2 << G4endl;
-
-    G4cout << "Inside> for in " << hss->Inside(G4ThreeVector(0.9,0,0)) << G4endl;
-    G4cout << "Inside> for surface " << hss->Inside(G4ThreeVector(1.0,0,0)) << G4endl;
-    G4cout << "Inside> for out " << hss->Inside(G4ThreeVector(1.1,0,0)) << G4endl;
-
-    G4cout << "Distance to in> for in " << hss->DistanceToIn(G4ThreeVector(0,0,0)) << G4endl;
-    G4cout << "Distance to in> for out " << hss->DistanceToIn(G4ThreeVector(10,10,10)) << G4endl;
-
-    G4cout << "Distance to out> for in " << hss->DistanceToOut(G4ThreeVector(0,0,0)) << G4endl;
-    G4cout << "Distance to out> for out " << hss->DistanceToOut(G4ThreeVector(2,0,0)) << G4endl;
 
     auto hss1 = new G4BoxInstrumented("World",25*mm,25*mm,25*mm);
 

@@ -28,21 +28,20 @@ EInside G4HalfSpaceSolid::Inside(const G4ThreeVector& p) const {
 
     G4cout << "G4HalfSpaceSolid::Inside(" << p << ")======================" << G4endl;
 
-    G4double minDist = kInfinity;
+    G4double sdf = kInfinity;
     for(auto z : _zones) {
         auto d = z->Distance(p);
-        if (fabs(d) < fabs(minDist))
-            minDist = d;
+        sdf = std::min(d,sdf);
     }
 
-    G4cout << "G4HalfSpaceSolid::Inside(" << p << ") minDist " << minDist << G4endl;
+    G4cout << "G4HalfSpaceSolid::Inside(" << p << ") minDist " << sdf << G4endl;
 
 
-    if (minDist < -kCarTolerance/2.0) {
+    if (sdf < -kCarTolerance/2.0) {
         G4cout << "G4HalfSpaceSolid::Inside(" << p << ") inside" << G4endl;
         return kInside;
     }
-    else if (fabs(minDist) < kCarTolerance/2.0) {
+    else if (fabs(sdf) < kCarTolerance/2.0) {
         G4cout << "G4HalfSpaceSolid::Inside(" << p << ") surface" << G4endl;
         return kSurface;
     }
@@ -58,27 +57,27 @@ G4ThreeVector G4HalfSpaceSolid::SurfaceNormal(const G4ThreeVector& p) const {
 
 G4double G4HalfSpaceSolid::DistanceToIn(const G4ThreeVector& p,
                                         const G4ThreeVector& v) const {
-    G4double minDist = kInfinity;
+    G4double sdf = kInfinity;
     for(auto z : _zones) {
-        auto d = z->DistanceToIn(p,v);
+        auto d = z->Distance(p,v);
         G4cout << "G4HalfSpaceSolid::DistanceToIn> zone min dist " << d << G4endl;
-        minDist = std::min(d,minDist);
+        sdf = std::min(d,sdf);
     }
-    G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << "," << v << ") " << fabs(minDist) << G4endl;
-    return fabs(minDist);
+    G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << "," << v << ") " << fabs(sdf) << G4endl;
+    return fabs(sdf);
 }
 
 G4double G4HalfSpaceSolid::DistanceToIn(const G4ThreeVector& p) const {
-    G4double minDist = kInfinity;
+    G4double sdf = kInfinity;
     for(auto z : _zones) {
-        auto d = z->DistanceToIn(p);
+        auto d = z->Distance(p);
         G4cout << "G4HalfSpaceSolid::DistanceToIn> zone min dist " << d << G4endl;
-        if (d < minDist) {
-            minDist = d;
+        if (d < sdf) {
+            sdf = d;
         }
     }
-    G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << ") " << fabs(minDist) << G4endl;
-    return fabs(minDist);
+    G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << ") " << fabs(sdf) << G4endl;
+    return fabs(sdf);
 }
 
 G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p,
@@ -86,26 +85,26 @@ G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p,
                                          const G4bool calcNorm,
                                          G4bool* validNorm,
                                          G4ThreeVector* n) const {
-    G4double minDist = kInfinity;
+    G4double sdf = kInfinity;
     for(auto z : _zones) {
-        auto d = z->DistanceToOut(p,v);
+        auto d = z->Distance(p,v);
         G4cout << "G4HalfSpaceSolid::DistanceToOut> zone min dist " << d << G4endl;
-        minDist = std::min(d,minDist);
+        sdf = std::min(d,sdf);
     }
-    G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << "," << v << ") " << fabs(minDist) << G4endl;
-    return fabs(minDist);
+    G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << "," << v << ") " << fabs(sdf) << G4endl;
+    return fabs(sdf);
 }
 
 G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p) const {
-    G4double minDist = kInfinity;
+    G4double sdf = kInfinity;
     for(auto z : _zones) {
-        auto d = z->DistanceToOut(p);
+        auto d = z->Distance(p);
         G4cout << "G4HalfSpaceSolid::DistanceToOut> zone min dist " << d << G4endl;
-        minDist = std::min(d,minDist);
+        sdf = std::min(d,sdf);
     }
-    G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << ") " << fabs(minDist) << G4endl;
+    G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << ") " << fabs(sdf) << G4endl;
 
-    return fabs(minDist);
+    return fabs(sdf);
 }
 
 G4GeometryType G4HalfSpaceSolid::GetEntityType() const {

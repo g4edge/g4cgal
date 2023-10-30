@@ -47,76 +47,37 @@ G4double G4HalfSpaceZone::Distance(const G4ThreeVector &p) const {
     return sdf;
 }
 
-G4double G4HalfSpaceZone::DistanceToIn(const G4ThreeVector& p) const {
-    auto sdf = Distance(p);
+G4double G4HalfSpaceZone::Distance(const G4ThreeVector& p, const G4ThreeVector& v) const {
 
-    if (sdf >= 0) {
-        return sdf;
-    }
-    else {
-        return 9e99;
-    }
-}
+    G4double sdf = -9e99;
 
-G4double G4HalfSpaceZone::DistanceToOut(const G4ThreeVector& p) const {
-    auto sdf = Distance(p);
-
-    if (sdf <= 0) {
-        return fabs(sdf);
-    }
-    else {
-        return 9e99;
-    }
-
-}
-
-G4double G4HalfSpaceZone::DistanceToIn(const G4ThreeVector& p, const G4ThreeVector& v) const {
-    G4double minDist = 9e99;
     for(auto op : _half_spaces) {
-        G4double d = 9e99;
-        if(op.first == intersection)
-            d = op.second->DistanceToIn(p,v);
-        else
-            d = op.second->DistanceToOut(p,v);
+        G4double d;
+        if(op.first == intersection) {
+            d = op.second->Distance(p, v);
+            if(d != 9e99) {
+                sdf = std::max(d, sdf);
+            }
+        }
+        else {
+            d = op.second->Distance(p, v);
+            if(d != 9e99) {
+                sdf = std::max(-d,sdf);
+            }
+        }
 
-        G4cout << "G4HalfSpaceZone::DistanceToIn(" << p << "," << v << ") hs dist " << d << G4endl;
-        minDist = std::min(d, minDist);
+        G4cout << "G4HalfSpaceZone::Distance(" << p << "," << v << ") hs dist " << d << " " << sdf << G4endl;
     }
 
-    auto pTest = p + minDist*v;
+    auto pTest = p + sdf*v;
     auto pDist = Distance(pTest);
-    G4cout << "G4HalfSpaceZone::DistanceToIn(" << p << "," << v << ") trial intersection dist " << pDist << G4endl;
+    G4cout << "G4HalfSpaceZone::Distance(" << p << "," << v << ") trial intersection dist " << pDist << G4endl;
 
     if(pDist > 0) {
         return 9e99;
     }
     else {
-        return minDist;
-    }
-}
-
-G4double G4HalfSpaceZone::DistanceToOut(const G4ThreeVector& p, const G4ThreeVector& v) const {
-    G4double minDist = 9e99;
-    for(auto op : _half_spaces) {
-        G4double d = 9e99;
-        if(op.first == intersection)
-            d = op.second->DistanceToOut(p,v);
-        else
-            d = op.second->DistanceToIn(p,v);
-
-        G4cout << "G4HalfSpaceZone::DistanceToOut(" << p << "," << v << ") hs dist " << d << G4endl;
-        minDist = std::min(d, minDist);
-    }
-
-    auto pTest = p + minDist*v;
-    auto pDist = Distance(pTest);
-    G4cout << "G4HalfSpaceZone::DistanceToOut(" << p << "," << v << ") trial intersection dist " << pDist << G4endl;
-
-    if(pDist < 0) {
-        return 9e99;
-    }
-    else {
-        return minDist;
+        return sdf;
     }
 }
 
