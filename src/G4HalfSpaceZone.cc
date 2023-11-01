@@ -26,7 +26,7 @@ G4bool G4HalfSpaceZone::Inside(const G4ThreeVector& p) const {
 
 G4double G4HalfSpaceZone::Distance(const G4ThreeVector &p) const {
 
-    G4cout << "G4HalfSpaceZone::Distance(" << p << ")======================" << G4endl;
+    G4cout << "G4HalfSpaceZone::Distance(" << p << ")" << G4endl;
 
     G4double sdf = -9e99;
     for(auto op : _half_spaces) {
@@ -41,8 +41,7 @@ G4double G4HalfSpaceZone::Distance(const G4ThreeVector &p) const {
             d = -op.second->Distance(p);
             sdf = std::max(d, sdf);
         }
-        G4cout << "G4HalfSpaceZone::Distance(" << p << ") dist " << d << " " << sdf << G4endl;
-
+        G4cout << "G4HalfSpaceZone::Distance(" << p << ") hs dist " << d << " " << sdf << G4endl;
     }
     return sdf;
 }
@@ -55,13 +54,13 @@ G4double G4HalfSpaceZone::Distance(const G4ThreeVector& p, const G4ThreeVector& 
         G4double d;
         if(op.first == intersection) {
             d = op.second->Distance(p, v);
-            if(d != 9e99) {
+            if(d != 9e99 && fabs(d) > 1e-9) {
                 sdf = std::max(d, sdf);
             }
         }
         else {
             d = op.second->Distance(p, v);
-            if(d != 9e99) {
+            if(d != 9e99 && fabs(d) > 1e-9) {
                 sdf = std::max(-d,sdf);
             }
         }
@@ -69,17 +68,47 @@ G4double G4HalfSpaceZone::Distance(const G4ThreeVector& p, const G4ThreeVector& 
         G4cout << "G4HalfSpaceZone::Distance(" << p << "," << v << ") hs dist " << d << " " << sdf << G4endl;
     }
 
-    auto pTest = p + sdf*v;
+    auto pTest = p + fabs(sdf)*v;
     auto pDist = Distance(pTest);
     G4cout << "G4HalfSpaceZone::Distance(" << p << "," << v << ") trial intersection dist " << pDist << G4endl;
 
     if(pDist > 0) {
-        return 9e99;
+        return kInfinity;
     }
     else {
-        return sdf;
-    }
+        return fabs(sdf);
+    };
 }
+
+G4double G4HalfSpaceZone::DistanceToOut(const G4ThreeVector& p, const G4ThreeVector& v) const {
+    G4double sdf = -9e99;
+
+    for(auto op : _half_spaces) {
+        G4double d;
+        if(op.first == intersection) {
+            d = op.second->Distance(p, v);
+            if(d != 9e99 && fabs(d) > 1e-9 ) {
+                sdf = std::max(d, sdf);
+            }
+        }
+        else {
+            d = op.second->Distance(p, v);
+            if(d != 9e99 && fabs(d) > 1e-9 ) {
+                sdf = std::max(-d,sdf);
+            }
+        }
+
+        G4cout << "G4HalfSpaceZone::DistanceToOut(" << p << "," << v << ") hs dist " << d << " " << sdf << G4endl;
+    }
+
+    auto pTest = p + fabs(sdf)*v;
+    auto pDist = Distance(pTest);
+    G4cout << "G4HalfSpaceZone::DistanceToOut(" << p << "," << v << ") trial intersection dist " << pDist << G4endl;
+
+    return fabs(sdf);
+
+}
+
 
 Nef_polyhedron_3 G4HalfSpaceZone::GetNefPolyhedron() const {
 

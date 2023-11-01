@@ -5,6 +5,8 @@
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
 #include "G4SystemOfUnits.hh"
+#include "Randomize.hh"
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -31,9 +33,20 @@ CGALPrimaryGeneratorAction::~CGALPrimaryGeneratorAction()
 
 void CGALPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  G4ThreeVector v(1, 0, 0);
 
-  fParticleGun->SetParticlePosition(G4ThreeVector(-10 * m, 0 * m, 0 * m));
-  fParticleGun->SetParticleMomentumDirection(v);
-  fParticleGun->GeneratePrimaryVertex(anEvent);
+    // G4ThreeVector v(1, 0, 0);
+    // fParticleGun->SetParticlePosition(G4ThreeVector(-75 * mm, 75*(G4UniformRand()-0.5) *mm, 75*(G4UniformRand()-0.5) * mm));
+
+    G4ThreeVector v(0, 1, 0);
+    fParticleGun->SetParticlePosition(G4ThreeVector(75*(G4UniformRand()-0.5) *mm, -75*mm, 75*(G4UniformRand()-0.5) * mm));
+
+    //G4ThreeVector v(0, 0, 1);
+    //fParticleGun->SetParticlePosition(G4ThreeVector(75*(G4UniformRand()-0.5) *mm, 75*(G4UniformRand()-0.5) * mm, -75*mm));
+
+
+    v = v/v.mag();
+
+    //fParticleGun->SetParticlePosition(G4ThreeVector(-50 * mm, 0*mm, 0* mm));
+    fParticleGun->SetParticleMomentumDirection(v);
+    fParticleGun->GeneratePrimaryVertex(anEvent);
 }

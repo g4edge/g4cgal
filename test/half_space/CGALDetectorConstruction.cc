@@ -55,7 +55,7 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     auto p4 = new G4HalfSpacePlane(G4ThreeVector(0,-25*mm,0),G4ThreeVector(0,-1,0));
     auto p5 = new G4HalfSpacePlane(G4ThreeVector(0,0,25*mm),G4ThreeVector(0,0,1));
     auto p6 = new G4HalfSpacePlane(G4ThreeVector(0,0,-25*mm),G4ThreeVector(0,0,-1));
-    auto p7 = new G4HalfSpacePlane(G4ThreeVector(0,-1*mm,-1*mm), G4ThreeVector(0,1,1));
+    auto p7 = new G4HalfSpacePlane(G4ThreeVector(0,-12.5*mm,-12.5*mm), G4ThreeVector(0,1,1));
 
     auto s1 = new G4HalfSpaceSphere(G4ThreeVector(0,0,0), 25*mm);
 

@@ -15,6 +15,7 @@ public:
     virtual G4bool   Inside(const G4ThreeVector& p) const override;
     virtual G4double Distance(const G4ThreeVector &p) const override;
     virtual G4double Distance(const G4ThreeVector& p, const G4ThreeVector& v) const override;
+    virtual G4double DistanceToOut(const G4ThreeVector& p, const G4ThreeVector& v) const;
     virtual Nef_polyhedron_3 GetNefPolyhedron() const override;
 
 protected:
