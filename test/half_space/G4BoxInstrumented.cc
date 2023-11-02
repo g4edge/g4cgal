@@ -167,6 +167,8 @@ void G4BoxInstrumented::ComputeDimensions(G4VPVParameterisation* p,
 
 void G4BoxInstrumented::BoundingLimits(G4ThreeVector& pMin, G4ThreeVector& pMax) const
 {
+  G4cout << "G4BoxInstrumented::BoundingLimits(" << pMin << "," << pMax << ")" << G4endl;
+
   pMin.set(-fDx,-fDy,-fDz);
   pMax.set( fDx, fDy, fDz);
 
@@ -209,6 +211,7 @@ G4bool G4BoxInstrumented::CalculateExtent(const EAxis pAxis,
 
 EInside G4BoxInstrumented::Inside(const G4ThreeVector& p) const
 {
+  G4cout << "G4BoxInstrumented::Inside(" << p << ")" << G4endl;
   G4double dist = std::max(std::max(
                   std::abs(p.x())-fDx,
                   std::abs(p.y())-fDy),
@@ -223,6 +226,7 @@ EInside G4BoxInstrumented::Inside(const G4ThreeVector& p) const
 
 G4ThreeVector G4BoxInstrumented::SurfaceNormal( const G4ThreeVector& p) const
 {
+  G4cout << "G4BoxInstrumented::SurfaceNormal(" << p << ")" << G4endl;
   G4ThreeVector norm(0,0,0);
   G4double px = p.x();
   if (std::abs(std::abs(px) - fDx) <= delta) norm.setX(px < 0 ? -1. : 1.);
@@ -265,6 +269,7 @@ G4ThreeVector G4BoxInstrumented::SurfaceNormal( const G4ThreeVector& p) const
 
 G4ThreeVector G4BoxInstrumented::ApproxSurfaceNormal(const G4ThreeVector& p) const
 {
+  G4cout << "G4BoxInstrumented::ApproxSurfaceNormal(" << p << ")" << G4endl;
   G4double distx = std::abs(p.x()) - fDx;
   G4double disty = std::abs(p.y()) - fDy;
   G4double distz = std::abs(p.z()) - fDz;
@@ -286,6 +291,7 @@ G4ThreeVector G4BoxInstrumented::ApproxSurfaceNormal(const G4ThreeVector& p) con
 G4double G4BoxInstrumented::DistanceToIn(const G4ThreeVector& p,
                              const G4ThreeVector& v) const
 {
+  G4cout << "G4BoxInstrumented::DistanceToIn(" << p << "," << v << ")" << G4endl;
   // Check if point is on the surface and traveling away
   //
   if ((std::abs(p.x()) - fDx) >= -delta && p.x()*v.x() >= 0) return kInfinity;
@@ -322,7 +328,8 @@ G4double G4BoxInstrumented::DistanceToIn(const G4ThreeVector& p,
 
 G4double G4BoxInstrumented::DistanceToIn(const G4ThreeVector& p) const
 {
-  G4double dist = std::max(std::max(
+    G4cout << "G4BoxInstrumented::DistanceToIn(" << p << ")" << G4endl;
+    G4double dist = std::max(std::max(
                   std::abs(p.x())-fDx,
                   std::abs(p.y())-fDy),
                   std::abs(p.z())-fDz);
@@ -340,6 +347,8 @@ G4double G4BoxInstrumented::DistanceToOut( const G4ThreeVector& p,
                                const G4bool calcNorm,
                                G4bool* validNorm, G4ThreeVector* n) const
 {
+
+  G4cout << "G4BoxInstrumented::DistanceToOut(" << p << "," << v << "," << calcNorm << " " << validNorm << ")" << G4endl;
   // Check if point is on the surface and traveling away
   //
   if ((std::abs(p.x()) - fDx) >= -delta && p.x()*v.x() > 0)
@@ -402,6 +411,8 @@ G4double G4BoxInstrumented::DistanceToOut( const G4ThreeVector& p,
 
 G4double G4BoxInstrumented::DistanceToOut(const G4ThreeVector& p) const
 {
+  G4cout << "G4BoxInstrumented::DistanceToOut(" << p << ")" << G4endl;
+
 #ifdef G4CSGDEBUG
   if( Inside(p) == kOutside )
   {

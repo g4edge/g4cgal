@@ -33,7 +33,6 @@ G4double G4HalfSpacePlane::Distance(const G4ThreeVector &p) const {
 
 G4double G4HalfSpacePlane::Distance(const G4ThreeVector &p,
                                     const G4ThreeVector &d) const {
-
     // v = lambda d + p
     // (v - p0) . n = 0
     // (lambda d + p - p0).n =0
@@ -47,8 +46,13 @@ G4double G4HalfSpacePlane::Distance(const G4ThreeVector &p,
     if(dDenom != 0)
         return lambda;
     else
-        return 9e99;
+        return DBL_MAX;
 }
+
+G4ThreeVector G4HalfSpacePlane::Normal(const G4ThreeVector&p) const {
+    return _n;
+}
+
 
 Nef_polyhedron_3 G4HalfSpacePlane::GetNefPolyhedron() const {
     return Nef_polyhedron_3(Plane_3(Point_3(_p0.x(), _p0.y(), _p0.z()),

@@ -44,6 +44,10 @@ G4double G4HalfSpaceSphere::Distance(const G4ThreeVector& p,
     return lambda1;
 }
 
+G4ThreeVector G4HalfSpaceSphere::Normal(const G4ThreeVector&p) const {
+    return p/p.mag();
+}
+
 Nef_polyhedron_3 G4HalfSpaceSphere::GetNefPolyhedron() const {
     return Nef_polyhedron_3();
 }

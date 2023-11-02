@@ -25,6 +25,7 @@ public:
     virtual G4bool   Inside(const G4ThreeVector& p) const = 0;
     virtual G4double Distance(const G4ThreeVector& p) const = 0;
     virtual G4double Distance(const G4ThreeVector& p, const G4ThreeVector& v) const = 0;
+    virtual G4ThreeVector Normal(const G4ThreeVector& p) const = 0;
 
     virtual Nef_polyhedron_3 GetNefPolyhedron() const = 0;
 

@@ -17,6 +17,7 @@ public:
     virtual G4double Distance(const G4ThreeVector& p, const G4ThreeVector& v) const override;
     virtual G4double DistanceToOut(const G4ThreeVector& p, const G4ThreeVector& v) const;
     virtual Nef_polyhedron_3 GetNefPolyhedron() const override;
+    virtual G4ThreeVector Normal(const G4ThreeVector&p) const override;
 
 protected:
     std::vector<std::pair<operation, G4VHalfSpace*>> _half_spaces;

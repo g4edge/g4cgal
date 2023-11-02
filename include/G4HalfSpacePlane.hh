@@ -14,6 +14,7 @@ public:
     virtual G4double Distance(const G4ThreeVector&p) const override;
     virtual G4double Distance(const G4ThreeVector& p,
                               const G4ThreeVector& d) const override;
+    virtual G4ThreeVector Normal(const G4ThreeVector&p) const override;
 
     virtual Nef_polyhedron_3 GetNefPolyhedron() const override;
 
