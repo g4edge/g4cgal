@@ -1,6 +1,7 @@
 #pragma once
 
 #include "G4VSolid.hh"
+#include "geomdefs.hh"
 
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
@@ -22,10 +23,10 @@ class G4VHalfSpace {
 public:
     G4VHalfSpace();
     ~G4VHalfSpace();
-    virtual G4bool   Inside(const G4ThreeVector& p) const = 0;
-    virtual G4double Distance(const G4ThreeVector& p) const = 0;
-    virtual G4double Distance(const G4ThreeVector& p, const G4ThreeVector& v) const = 0;
-    virtual G4ThreeVector Normal(const G4ThreeVector& p) const = 0;
+    virtual EInside Inside(const G4ThreeVector& p) const;
+    virtual G4double Sdf(const G4ThreeVector &p) const = 0;
+    G4ThreeVector Normal(const G4ThreeVector& p, G4double d) const;
+    virtual std::vector<G4ThreeVector> Intersection(const G4ThreeVector& p, const G4ThreeVector &d) const = 0;
 
     virtual Nef_polyhedron_3 GetNefPolyhedron() const = 0;
 

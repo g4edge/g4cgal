@@ -10,11 +10,8 @@ public:
     G4HalfSpacePlane(G4double a, G4double b, G4double c, G4double d);
     ~G4HalfSpacePlane();
 
-    virtual G4bool Inside(const G4ThreeVector& p) const override;
-    virtual G4double Distance(const G4ThreeVector&p) const override;
-    virtual G4double Distance(const G4ThreeVector& p,
-                              const G4ThreeVector& d) const override;
-    virtual G4ThreeVector Normal(const G4ThreeVector&p) const override;
+    virtual G4double Sdf(const G4ThreeVector&p) const override;
+    virtual std::vector<G4ThreeVector> Intersection(const G4ThreeVector& p, const G4ThreeVector &d) const override;
 
     virtual Nef_polyhedron_3 GetNefPolyhedron() const override;
 

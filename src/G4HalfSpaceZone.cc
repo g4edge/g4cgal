@@ -1,6 +1,8 @@
 #include "G4HalfSpaceZone.hh"
 
 #include <algorithm>
+#include <ranges>
+#include <tuple>
 
 G4HalfSpaceZone::G4HalfSpaceZone() {};
 G4HalfSpaceZone::~G4HalfSpaceZone() {};
@@ -13,20 +15,7 @@ void G4HalfSpaceZone::AddSubtraction(G4VHalfSpace *hs) {
     _half_spaces.push_back(std::make_pair(subtraction, hs));
 };
 
-G4bool G4HalfSpaceZone::Inside(const G4ThreeVector& p) const {
-    G4double sdf = Distance(p);
-
-    if(sdf > 0) {
-        return false;
-    }
-    else {
-        return true;
-    }
-}
-
-G4double G4HalfSpaceZone::Distance(const G4ThreeVector &p) const {
-
-    // G4cout << "G4HalfSpaceZone::Distance(" << p << ")" << G4endl;
+G4double G4HalfSpaceZone::Sdf(const G4ThreeVector &p) const {
 
     G4double sdf = -DBL_MAX;
     for(auto op : _half_spaces) {
@@ -34,90 +23,48 @@ G4double G4HalfSpaceZone::Distance(const G4ThreeVector &p) const {
         G4double d;
 
         if (op.first == intersection) {
-            d = op.second->Distance(p);
+            d = op.second->Sdf(p);
             sdf = std::max(d, sdf);
         }
         else {
-            d = op.second->Distance(p);
+            d = op.second->Sdf(p);
             sdf = std::max(-d, sdf);
         }
-        // G4cout << "G4HalfSpaceZone::Distance(" << p << ") hs dist " << d << " " << sdf << G4endl;
     }
     return sdf;
 }
 
-G4double G4HalfSpaceZone::Distance(const G4ThreeVector& p, const G4ThreeVector& v) const {
+std::vector<G4ThreeVector> G4HalfSpaceZone::Intersection(const G4ThreeVector& p, const G4ThreeVector& v) const {
 
-    G4double sdf = -DBL_MAX;
+    std::vector<G4ThreeVector> trialInter;
 
-    for(auto op : _half_spaces) {
-        G4double d;
-        if(op.first == intersection) {
-            d = op.second->Distance(p, v);
-            if(d != DBL_MAX) {
-                sdf = std::max(d, sdf);
-            }
+    // create intersections
+    for(auto op: _half_spaces) {
+        G4ThreeVector i2;
+        auto intersections = op.second->Intersection(p, v);
+        for(auto i : intersections) {
+            trialInter.push_back(i);
         }
-        else {
-            d = op.second->Distance(p, v);
-            if(d != DBL_MAX) {
-                sdf = std::max(-d,sdf);
-            }
-        }
-
-        //G4cout << "G4HalfSpaceZone::Distance(" << p << "," << v << ") hs dist " << d << " " << sdf << G4endl;
     }
 
-    auto pTest = p + fabs(sdf)*v;
-    auto pDist = Distance(pTest);
-    //G4cout << "
-    // ::Distance(" << p << "," << v << ") trial intersection dist " << pDist << G4endl;
-
-    if(fabs(pDist) < 1e-9) {
-        return fabs(sdf);
+    // test intersections
+    std::vector<G4ThreeVector> inter;
+    for(auto i : trialInter) {
+        auto sdf = Sdf(i);
+        if(fabs(sdf)< 1e-9) {
+            inter.push_back(i);
+        }
     }
-    else {
-        return DBL_MAX;
-    };
+
+    // order intersections in distance
+    auto g4tvSort = ([p](G4ThreeVector v1, G4ThreeVector v2) {
+        return ((v1-p).mag()<=(v2-p).mag());
+    });
+    std::sort(inter.begin(), inter.end(), g4tvSort);
+
+    return inter;
+
 }
-
-G4double G4HalfSpaceZone::DistanceToOut(const G4ThreeVector& p, const G4ThreeVector& v) const {
-    G4double sdf = -DBL_MAX;
-
-    for(auto op : _half_spaces) {
-        G4double d;
-        if(op.first == intersection) {
-            d = op.second->Distance(p, v);
-            if(d != DBL_MAX && fabs(d) > 1e-9 ) {
-                sdf = std::max(d, sdf);
-            }
-        }
-        else {
-            d = op.second->Distance(p, v);
-            if(d != DBL_MAX && fabs(d) > 1e-9 ) {
-                sdf = std::max(-d,sdf);
-            }
-        }
-
-        //G4cout << "G4HalfSpaceZone::DistanceToOut(" << p << "," << v << ") hs dist " << d << " " << sdf << G4endl;
-    }
-
-    auto pTest = p + fabs(sdf)*v;
-    auto pDist = Distance(pTest);
-    //G4cout << "G4HalfSpaceZone::DistanceToOut(" << p << "," << v << ") trial intersection dist " << pDist << G4endl;
-
-    if(pDist < 0) {
-        return 0;
-    }
-    else {
-        return sdf;
-    };
-}
-
-G4ThreeVector G4HalfSpaceZone::Normal(const G4ThreeVector& p) const {
-    return G4ThreeVector();
-}
-
 
 Nef_polyhedron_3 G4HalfSpaceZone::GetNefPolyhedron() const {
 

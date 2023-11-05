@@ -1,8 +1,31 @@
 #include "G4VHalfSpace.hh"
 
+
 G4VHalfSpace::G4VHalfSpace() {}
 
 G4VHalfSpace::~G4VHalfSpace() {}
+
+EInside G4VHalfSpace::Inside(const G4ThreeVector &p) const {
+    auto sdf = Sdf(p);
+    if (sdf > 1e-9) {
+        return EInside::kOutside;
+    }
+    else if(sdf < -1e-9) {
+        return EInside::kInside;
+    }
+    else {
+        return EInside::kSurface;
+    }
+}
+
+G4ThreeVector G4VHalfSpace::Normal(const G4ThreeVector& p, G4double d) const {
+    G4ThreeVector n = G4ThreeVector(Sdf(p+G4ThreeVector(d,0,0))-Sdf(p-G4ThreeVector(d,0,0)),
+                                    Sdf(p+G4ThreeVector(0,d,0))-Sdf(p-G4ThreeVector(0,d,0)),
+                                    Sdf(p+G4ThreeVector(0,0,d))-Sdf(p-G4ThreeVector(0,0,d)));
+    n = n/n.mag();
+
+    return n;
+}
 
 void G4VHalfSpace::QuadraticSolve(G4double a, G4double b, G4double c,
                                   G4int &nSoln, G4double &x1, G4double &x2)  {

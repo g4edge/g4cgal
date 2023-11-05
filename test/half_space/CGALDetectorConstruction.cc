@@ -60,7 +60,6 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     auto s1 = new G4HalfSpaceSphere(G4ThreeVector(0,0,0), 25*mm);
 
     auto z = new G4HalfSpaceZone();
-#if 1
     z->AddIntersection(p1);
     z->AddIntersection(p2);
     z->AddIntersection(p3);
@@ -68,7 +67,6 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     z->AddIntersection(p5);
     z->AddIntersection(p6);
     z->AddSubtraction(p7);
-#endif
 
 #if 0
     z->AddIntersection(s1);
@@ -76,50 +74,6 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
 
     auto hss = new G4HalfSpaceSolid("hsSolid");
     hss->addZone(z);
-
-    auto hss1 = new G4BoxInstrumented("World",25*mm,25*mm,25*mm);
-
-    G4cout << "inside> out  " << hss1->Inside(G4ThreeVector(-50,0,0)) << G4endl;
-    G4cout << "inside> surf " << hss1->Inside(G4ThreeVector(-25,0,0)) << G4endl;
-    G4cout << "inside> in   " << hss1->Inside(G4ThreeVector(0,0,0)) << G4endl;
-
-    G4cout << "distance to in> " << hss1->DistanceToIn(G4ThreeVector(-75,0,0)) << G4endl;
-    G4cout << "distance to in> " << hss1->DistanceToIn(G4ThreeVector(-25,0,0)) << G4endl;
-    G4cout << "distance to in> " << hss1->DistanceToIn(G4ThreeVector(0,0,0)) << G4endl;
-
-    G4cout << "distance to in> " << hss1->DistanceToIn(G4ThreeVector(-75,0,0),G4ThreeVector(1,0,0)) << G4endl;
-    G4cout << "distance to in> " << hss1->DistanceToIn(G4ThreeVector(-25,0,0),G4ThreeVector(1,0,0)) << G4endl;
-    G4cout << "distance to in> " << hss1->DistanceToIn(G4ThreeVector(0,0,0),G4ThreeVector(1,0,0)) << G4endl;
-    G4cout << "distance to in> " << hss1->DistanceToIn(G4ThreeVector(-75,0,0),G4ThreeVector(0,1,0)) << G4endl;
-
-    G4cout << "distance to out> " << hss1->DistanceToOut(G4ThreeVector(-75,0,0)) << G4endl;
-    G4cout << "distance to out> " << hss1->DistanceToOut(G4ThreeVector(-25,0,0)) << G4endl;
-    G4cout << "distance to out> " << hss1->DistanceToOut(G4ThreeVector(0,0,0)) << G4endl;
-
-    G4cout << "distance to out> " << hss1->DistanceToOut(G4ThreeVector(-75,0,0),G4ThreeVector(1,0,0)) << G4endl;
-    G4cout << "distance to out> " << hss1->DistanceToOut(G4ThreeVector(-25,0,0),G4ThreeVector(1,0,0)) << G4endl;
-    G4cout << "distance to out> " << hss1->DistanceToOut(G4ThreeVector(0,0,0),G4ThreeVector(1,0,0)) << G4endl;
-
-    G4cout << "inside> out  " << hss->Inside(G4ThreeVector(-50,0,0)) << G4endl;
-    G4cout << "inside> surf " << hss->Inside(G4ThreeVector(-25,0,0)) << G4endl;
-    G4cout << "inside> in   " << hss->Inside(G4ThreeVector(0,0,0)) << G4endl;
-
-    G4cout << "distance to in> " << hss->DistanceToIn(G4ThreeVector(-75,0,0)) << G4endl;
-    G4cout << "distance to in> " << hss->DistanceToIn(G4ThreeVector(-25,0,0)) << G4endl;
-    G4cout << "distance to in> " << hss->DistanceToIn(G4ThreeVector(0,0,0)) << G4endl;
-
-    G4cout << "distance to in> " << hss->DistanceToIn(G4ThreeVector(-75,0,0),G4ThreeVector(1,0,0)) << G4endl;
-    G4cout << "distance to in> " << hss->DistanceToIn(G4ThreeVector(-25,0,0),G4ThreeVector(1,0,0)) << G4endl;
-    G4cout << "distance to in> " << hss->DistanceToIn(G4ThreeVector(0,0,0),G4ThreeVector(1,0,0)) << G4endl;
-    G4cout << "distance to in> " << hss->DistanceToIn(G4ThreeVector(-75,0,0),G4ThreeVector(0,1,0)) << G4endl;
-
-    G4cout << "distance to out> " << hss->DistanceToOut(G4ThreeVector(-75,0,0)) << G4endl;
-    G4cout << "distance to out> " << hss->DistanceToOut(G4ThreeVector(-25,0,0)) << G4endl;
-    G4cout << "distance to out> " << hss->DistanceToOut(G4ThreeVector(0,0,0)) << G4endl;
-
-    G4cout << "distance to out> " << hss->DistanceToOut(G4ThreeVector(-75,0,0),G4ThreeVector(1,0,0)) << G4endl;
-    G4cout << "distance to out> " << hss->DistanceToOut(G4ThreeVector(-25,0,0),G4ThreeVector(1,0,0)) << G4endl;
-    G4cout << "distance to out> " << hss->DistanceToOut(G4ThreeVector(0,0,0),G4ThreeVector(1,0,0)) << G4endl;
 
     auto logicHSS = new G4LogicalVolume(hss,
                                         env_mat,

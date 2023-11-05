@@ -9,15 +9,14 @@ public:
     G4HalfSpaceZone();
     ~G4HalfSpaceZone();
 
+    using G4VHalfSpace::Inside;
     void AddIntersection(G4VHalfSpace *hs);
     void AddSubtraction(G4VHalfSpace *hs);
 
-    virtual G4bool   Inside(const G4ThreeVector& p) const override;
-    virtual G4double Distance(const G4ThreeVector &p) const override;
-    virtual G4double Distance(const G4ThreeVector& p, const G4ThreeVector& v) const override;
-    virtual G4double DistanceToOut(const G4ThreeVector& p, const G4ThreeVector& v) const;
+    virtual G4double Sdf(const G4ThreeVector &p) const override;
+    virtual std::vector<G4ThreeVector> Intersection(const G4ThreeVector& p, const G4ThreeVector &d) const override;
+
     virtual Nef_polyhedron_3 GetNefPolyhedron() const override;
-    virtual G4ThreeVector Normal(const G4ThreeVector&p) const override;
 
 protected:
     std::vector<std::pair<operation, G4VHalfSpace*>> _half_spaces;

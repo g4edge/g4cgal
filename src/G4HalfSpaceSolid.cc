@@ -8,6 +8,34 @@ G4HalfSpaceSolid::G4HalfSpaceSolid(const G4String &nameIn) : G4VSolid(nameIn) {}
 
 G4HalfSpaceSolid::~G4HalfSpaceSolid() {};
 
+G4double G4HalfSpaceSolid::Sdf(const G4ThreeVector &p) const {
+    G4double sdf = kInfinity;
+    for(auto z : _zones) {
+        auto d = z->Sdf(p);
+        sdf = std::min(d,sdf);
+    }
+
+    return sdf;
+}
+
+std::vector<G4ThreeVector> G4HalfSpaceSolid::Intersection(const G4ThreeVector& p, const G4ThreeVector &d) const {
+
+    std::vector<G4ThreeVector> intersections;
+    return intersections;
+}
+
+Nef_polyhedron_3 G4HalfSpaceSolid::GetNefPolyhedron() const {
+    Nef_polyhedron_3 nef(Nef_polyhedron_3::EMPTY);
+
+    for(auto z : _zones) {
+        nef += z->GetNefPolyhedron();
+    }
+
+    return nef;
+
+}
+
+
 void G4HalfSpaceSolid::addZone(G4HalfSpaceZone *zone) {_zones.push_back(zone);}
 void G4HalfSpaceSolid::removeZone(G4HalfSpaceZone *zone) {_zones.push_back(zone);}
 
@@ -26,75 +54,69 @@ G4bool G4HalfSpaceSolid::CalculateExtent(const EAxis pAxis,
 
 EInside G4HalfSpaceSolid::Inside(const G4ThreeVector& p) const {
 
-    G4cout << "G4HalfSpaceSolid::Inside(" << p << ")" << G4endl;
-
-    G4double sdf = kInfinity;
-    for(auto z : _zones) {
-        auto d = z->Distance(p);
-        sdf = std::min(d,sdf);
-    }
-
-    //G4cout << "G4HalfSpaceSolid::Inside(" << p << ") minDist " << sdf << G4endl;
-
+    G4double sdf = Sdf(p);
 
     if (sdf < -kCarTolerance/2.0) {
-        //G4cout << "G4HalfSpaceSolid::Inside(" << p << ") inside" << G4endl;
-        //G4cout << "G4HalfSpaceSolid::Inside(" << p << ")<<<<<<<<<<<<<<<<<<<<<<<" << G4endl;
         return kInside;
     }
     else if (fabs(sdf) < kCarTolerance/2.0) {
-        //G4cout << "G4HalfSpaceSolid::Inside(" << p << ") surface" << G4endl;
-        //G4cout << "G4HalfSpaceSolid::Inside(" << p << ")<<<<<<<<<<<<<<<<<<<<<<<" << G4endl;
         return kSurface;
     }
     else {
-        //G4cout << "G4HalfSpaceSolid::Inside(" << p << ") outside" << G4endl;
-        //G4cout << "G4HalfSpaceSolid::Inside(" << p << ")<<<<<<<<<<<<<<<<<<<<<<<" << G4endl;
         return kOutside;
     }
-
-
 }
 
 G4ThreeVector G4HalfSpaceSolid::SurfaceNormal(const G4ThreeVector& p) const {
-    return G4ThreeVector(0,0,0);
+    return Normal(p,1e-5);
 }
 
 G4double G4HalfSpaceSolid::DistanceToIn(const G4ThreeVector& p,
                                         const G4ThreeVector& v) const {
-    G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << "," << v << ")" << G4endl;
+    G4ThreeVector i2;
 
-    G4double sdf = DBL_MAX;
-    for(auto z : _zones) {
-        auto d = z->Distance(p,v);
-        //G4cout << "G4HalfSpaceSolid::DistanceToIn> zone min dist " << d << G4endl;
-        sdf = std::min(d,sdf);
-    }
-    //G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << "," << v << ") " << fabs(sdf) << G4endl;
-    //G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << "," << v << ")<<<<<<<<<<<<<<<<<<<<<<<" << G4endl;
-
-    if(sdf < 0) {
+    if(Inside(p) == EInside::kInside) {
         return 0;
     }
-    else {
-        return fabs(sdf);
+
+    std::vector<G4ThreeVector> trialInter;
+    for (auto z : _zones) {
+        auto zoneIntersections = z->Intersection(p,v);
+        for(auto zi : zoneIntersections) {
+            trialInter.push_back(zi);
+        }
     }
+
+    // test intersections
+    std::vector<G4ThreeVector> inter;
+    for(auto i : trialInter) {
+        auto sdf = Sdf(i);
+        if(fabs(sdf)< 1e-9) {
+            inter.push_back(i);
+        }
+    }
+
+    // order intersections in distance
+    auto g4tvSort = ([p](G4ThreeVector v1, G4ThreeVector v2) {
+        return ((v1-p).mag()<=(v2-p).mag());
+    });
+    std::sort(inter.begin(), inter.end(), g4tvSort);
+
+    for(auto i : inter) {
+        if (SurfaceNormal(i).dot(v) < 0) {
+            return (i-p).mag();
+        }
+    }
+
+    return kInfinity;
 }
 
 G4double G4HalfSpaceSolid::DistanceToIn(const G4ThreeVector& p) const {
-    G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << ")" << G4endl;
 
-    G4double sdf = DBL_MAX;
-    for(auto z : _zones) {
-        auto d = z->Distance(p);
-        //G4cout << "G4HalfSpaceSolid::DistanceToIn> zone min dist " << d << G4endl;
-        sdf = std::min(d, sdf);
-    }
-    //G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << ") " << fabs(sdf) << G4endl;
-    //G4cout << "G4HalfSpaceSolid::DistanceToIn(" << p << ")<<<<<<<<<<<<<<<<<<<<<<<" << G4endl;
+    G4double distToIn = Sdf(p);
 
-    if (sdf >= 0) {
-        return fabs(sdf);
+    if(distToIn >= 0 ) {
+        return distToIn;
     }
     else {
         return 0;
@@ -106,39 +128,50 @@ G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p,
                                          const G4bool calcNorm,
                                          G4bool* validNorm,
                                          G4ThreeVector* n) const {
-    G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << "," << v << ")" << G4endl;
+    G4ThreeVector i2;
 
-    G4double sdf = kInfinity;
-    for(auto z : _zones) {
-        auto d = z->DistanceToOut(p,v);
-        //G4cout << "G4HalfSpaceSolid::DistanceToOut> zone min dist " << d << G4endl;
-        sdf = std::min(d, sdf);
+    std::vector<G4ThreeVector> trialInter;
+    for (auto z : _zones) {
+        auto zoneIntersections = z->Intersection(p,v);
+        for(auto zi : zoneIntersections) {
+            trialInter.push_back(zi);
+        }
     }
-    //G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << "," << v << ") " << fabs(sdf) << G4endl;
-    //G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << "," << v << ")<<<<<<<<<<<<<<<<<<<<<<<" << G4endl;
 
-    if (sdf <=0) {
-        return fabs(sdf);
+    // test intersections
+    std::vector<G4ThreeVector> inter;
+    for(auto i : trialInter) {
+        auto sdf = Sdf(i);
+        if(fabs(sdf)< 1e-9) {
+            inter.push_back(i);
+        }
+    }
+
+    // order intersections in distance
+    auto g4tvSort = ([p](G4ThreeVector v1, G4ThreeVector v2) {
+        return ((v1-p).mag()<=(v2-p).mag());
+    });
+    std::sort(inter.begin(), inter.end(), g4tvSort);
+
+    for(auto i : inter) {
+        if (SurfaceNormal(i).dot(v) > 0) {
+            return (i-p).mag();
+        }
+    }
+
+    return kInfinity;
+}
+
+G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p) const {
+    G4double distToOut= Sdf(p);
+
+    if(distToOut < 0 ) {
+        return fabs(distToOut);
     }
     else {
         return 0;
     }
-}
 
-G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p) const {
-
-    G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << ")" << G4endl;
-
-    G4double sdf = kInfinity;
-    for(auto z : _zones) {
-        auto d = z->Distance(p);
-        // G4cout << "G4HalfSpaceSolid::DistanceToOut> zone min dist " << d << G4endl;
-        sdf = std::min(d,sdf);
-    }
-    //G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << ") " << fabs(sdf) << G4endl;
-    //G4cout << "G4HalfSpaceSolid::DistanceToOut(" << p << ")<<<<<<<<<<<<<<<<<<<<<<<" << G4endl;
-
-    return fabs(sdf);
 }
 
 G4GeometryType G4HalfSpaceSolid::GetEntityType() const {
@@ -150,15 +183,9 @@ std::ostream& G4HalfSpaceSolid::StreamInfo(std::ostream& os) const {
 }
 
 void G4HalfSpaceSolid::DescribeYourselfTo(G4VGraphicsScene& scene) const {
-    Nef_polyhedron_3 nef(Nef_polyhedron_3::EMPTY);
-
-    for(auto z : _zones) {
-        nef += z->GetNefPolyhedron();
-    }
-
+    auto nef = GetNefPolyhedron();
     G4SurfaceMeshCGAL sm(nef);
     auto ph = sm.GetG4Polyhedron();
-
     scene.AddPrimitive(*ph);
 
     return;
