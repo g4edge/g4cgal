@@ -12,7 +12,7 @@ public:
     ~G4HalfSpaceSolid();
 
     G4double Sdf(const G4ThreeVector &) const override;
-    virtual std::vector<G4ThreeVector> Intersection(const G4ThreeVector& p, const G4ThreeVector &d) const override;
+    virtual std::vector<G4ThreeVector> Intersection(const G4ThreeVector& p, const G4ThreeVector &v) const override;
     virtual Nef_polyhedron_3 GetNefPolyhedron() const override;
 
     void addZone(G4HalfSpaceZone *zone);

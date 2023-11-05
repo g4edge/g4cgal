@@ -9,7 +9,7 @@ G4double G4HalfSpaceSphere::Sdf(const G4ThreeVector&p) const {
     return (p - _p0).mag() - _r;
 }
 
-std::vector<G4ThreeVector> G4HalfSpaceSphere::Intersection(const G4ThreeVector& p, const G4ThreeVector& d) const {
+std::vector<G4ThreeVector> G4HalfSpaceSphere::Intersection(const G4ThreeVector& p, const G4ThreeVector& v) const {
     // v = lambda d + p
     // |(v - p0)| = r
     // | lambda d + p - p0| = r
@@ -21,16 +21,16 @@ std::vector<G4ThreeVector> G4HalfSpaceSphere::Intersection(const G4ThreeVector& 
 
     std::vector<G4ThreeVector> intersections;
 
-    auto a = d.dot(d);
-    auto b = 2*d.dot(p-_p0);
+    auto a = v.dot(v);
+    auto b = 2*v.dot(p-_p0);
     auto c = (p-_p0).dot(p-_p0) - _r*_r;
 
     G4int nSoln = 0;
     G4double lambda1 = 0;
     G4double lambda2 = 0;
     G4VHalfSpace::QuadraticSolve(a,b,c,nSoln, lambda1, lambda2);
-    intersections.push_back(lambda1*d + p);
-    intersections.push_back(lambda2*d + p);
+    intersections.push_back(lambda1*v + p);
+    intersections.push_back(lambda2*v + p);
 
     return intersections;
 }

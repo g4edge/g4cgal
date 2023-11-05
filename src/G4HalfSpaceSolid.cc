@@ -18,10 +18,26 @@ G4double G4HalfSpaceSolid::Sdf(const G4ThreeVector &p) const {
     return sdf;
 }
 
-std::vector<G4ThreeVector> G4HalfSpaceSolid::Intersection(const G4ThreeVector& p, const G4ThreeVector &d) const {
+std::vector<G4ThreeVector> G4HalfSpaceSolid::Intersection(const G4ThreeVector& p, const G4ThreeVector &v) const {
 
-    std::vector<G4ThreeVector> intersections;
-    return intersections;
+    std::vector<G4ThreeVector> trialInter;
+    for (auto z : _zones) {
+        auto zoneIntersections = z->Intersection(p,v);
+        for(auto zi : zoneIntersections) {
+            trialInter.push_back(zi);
+        }
+    }
+
+    // test intersections
+    std::vector<G4ThreeVector> inter;
+    for(auto i : trialInter) {
+        auto sdf = Sdf(i);
+        if(fabs(sdf)< 1e-9) {
+            inter.push_back(i);
+        }
+    }
+
+    return inter;
 }
 
 Nef_polyhedron_3 G4HalfSpaceSolid::GetNefPolyhedron() const {

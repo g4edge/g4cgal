@@ -10,7 +10,7 @@ public:
     ~G4HalfSpaceSphere();
 
     virtual G4double Sdf(const G4ThreeVector&p) const override;
-    std::vector<G4ThreeVector> Intersection(const G4ThreeVector& p, const G4ThreeVector& d) const override;
+    std::vector<G4ThreeVector> Intersection(const G4ThreeVector& p, const G4ThreeVector& v) const override;
 
     virtual Nef_polyhedron_3 GetNefPolyhedron() const override;
 
