@@ -61,6 +61,7 @@ class G4SurfaceMeshCGAL : public G4VSurfaceMesh
 
     G4TessellatedSolid* GetG4TessellatedSolid();
     G4Polyhedron* GetG4Polyhedron();
+    Surface_mesh GetCGALSurface_mesh();
 
     G4SurfaceMeshCGAL* Subtraction(G4SurfaceMeshCGAL* surfaceMesh);
     G4SurfaceMeshCGAL* Union(G4SurfaceMeshCGAL* surfaceMesh);

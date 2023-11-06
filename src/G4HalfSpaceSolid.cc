@@ -91,36 +91,36 @@ G4double G4HalfSpaceSolid::DistanceToIn(const G4ThreeVector& p,
                                         const G4ThreeVector& v) const {
     G4ThreeVector i2;
 
-    if(Inside(p) == EInside::kInside) {
+    if (Inside(p) == EInside::kInside) {
         return 0;
     }
 
     std::vector<G4ThreeVector> trialInter;
-    for (auto z : _zones) {
-        auto zoneIntersections = z->Intersection(p,v);
-        for(auto zi : zoneIntersections) {
+    for (auto z: _zones) {
+        auto zoneIntersections = z->Intersection(p, v);
+        for (auto zi: zoneIntersections) {
             trialInter.push_back(zi);
         }
     }
 
     // test intersections
     std::vector<G4ThreeVector> inter;
-    for(auto i : trialInter) {
+    for (auto i: trialInter) {
         auto sdf = Sdf(i);
-        if(fabs(sdf)< 1e-9) {
+        if (fabs(sdf) < 1e-9) {
             inter.push_back(i);
         }
     }
 
     // order intersections in distance
     auto g4tvSort = ([p](G4ThreeVector v1, G4ThreeVector v2) {
-        return ((v1-p).mag()<=(v2-p).mag());
+        return ((v1 - p).mag() <= (v2 - p).mag());
     });
     std::sort(inter.begin(), inter.end(), g4tvSort);
 
-    for(auto i : inter) {
-        if (SurfaceNormal(i).dot(v) < 0) {
-            return (i-p).mag();
+    if(inter.size() > 0) {
+        if (SurfaceNormal(inter[0]).dot(v) <= 0) {
+            return (inter[0] - p).mag();
         }
     }
 
@@ -144,6 +144,12 @@ G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p,
                                          const G4bool calcNorm,
                                          G4bool* validNorm,
                                          G4ThreeVector* n) const {
+
+
+    if(Inside(p) == EInside::kOutside) {
+        return 0;
+    }
+
     G4ThreeVector i2;
 
     std::vector<G4ThreeVector> trialInter;
@@ -170,12 +176,12 @@ G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p,
     std::sort(inter.begin(), inter.end(), g4tvSort);
 
     for(auto i : inter) {
-        if (SurfaceNormal(i).dot(v) > 0) {
+        if (SurfaceNormal(i).dot(v) >= 0) {
             return (i-p).mag();
         }
     }
 
-    return kInfinity;
+    return 0;
 }
 
 G4double G4HalfSpaceSolid::DistanceToOut(const G4ThreeVector& p) const {

@@ -131,6 +131,10 @@ G4Polyhedron* G4SurfaceMeshCGAL::GetG4Polyhedron() {
     return poly;
 }
 
+Surface_mesh G4SurfaceMeshCGAL::GetCGALSurface_mesh() {
+    return sm;
+}
+
 G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::Subtraction(G4SurfaceMeshCGAL* s1)
 {
   Surface_mesh s2 = Surface_mesh();

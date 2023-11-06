@@ -22,12 +22,12 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     // Envelope parameters
 
     G4double env_sizeXY = 20*cm, env_sizeZ = 30*cm;
-    G4Material* env_mat = nist->FindOrBuildMaterial("G4_Fe");
+    G4Material* env_mat = nist->FindOrBuildMaterial("G4_Al");
 
     //////////////////////////////
     // World
-    G4double world_sizeXY = 1.2*env_sizeXY;
-    G4double world_sizeZ  = 1.2*env_sizeZ;
+    G4double world_sizeXY = env_sizeXY;
+    G4double world_sizeZ  = env_sizeZ;
     G4Material* world_mat = nist->FindOrBuildMaterial("G4_Galactic");
 
     auto solidWorld = new G4Box("World",
@@ -49,15 +49,16 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
                                        false);
 
 
-    auto p1 = new G4HalfSpacePlane(G4ThreeVector(25*mm,0,0),G4ThreeVector(1,0,0));
-    auto p2 = new G4HalfSpacePlane(G4ThreeVector(-25*mm,0,0),G4ThreeVector(-1,0,0));
-    auto p3 = new G4HalfSpacePlane(G4ThreeVector(0,25*mm,0),G4ThreeVector(0,1,0));
-    auto p4 = new G4HalfSpacePlane(G4ThreeVector(0,-25*mm,0),G4ThreeVector(0,-1,0));
-    auto p5 = new G4HalfSpacePlane(G4ThreeVector(0,0,25*mm),G4ThreeVector(0,0,1));
-    auto p6 = new G4HalfSpacePlane(G4ThreeVector(0,0,-25*mm),G4ThreeVector(0,0,-1));
+    auto p1 = new G4HalfSpacePlane(G4ThreeVector(25*mm-25,0,0),G4ThreeVector(1,0,0));
+    auto p2 = new G4HalfSpacePlane(G4ThreeVector(-25*mm-25,0,0),G4ThreeVector(-1,0,0));
+    auto p3 = new G4HalfSpacePlane(G4ThreeVector(0,25*mm-25,0),G4ThreeVector(0,1,0));
+    auto p4 = new G4HalfSpacePlane(G4ThreeVector(0,-25*mm-25,0),G4ThreeVector(0,-1,0));
+    auto p5 = new G4HalfSpacePlane(G4ThreeVector(0,0,25*mm-25),G4ThreeVector(0,0,1));
+    auto p6 = new G4HalfSpacePlane(G4ThreeVector(0,0,-25*mm-25),G4ThreeVector(0,0,-1));
     auto p7 = new G4HalfSpacePlane(G4ThreeVector(0,-12.5*mm,-12.5*mm), G4ThreeVector(0,1,1));
+    auto p8 = new G4HalfSpacePlane(G4ThreeVector(0,-12.5*mm,-12.5*mm), G4ThreeVector(1,0,1));
 
-    auto s1 = new G4HalfSpaceSphere(G4ThreeVector(0,0,0), 25*mm);
+    auto s1 = new G4HalfSpaceSphere(25*mm);
 
     auto z = new G4HalfSpaceZone();
     z->AddIntersection(p1);
@@ -66,14 +67,16 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     z->AddIntersection(p4);
     z->AddIntersection(p5);
     z->AddIntersection(p6);
-    z->AddSubtraction(p7);
+    //z->AddSubtraction(p7);
+    //z->AddSubtraction(p8);
+    //z->AddIntersection(s1);
 
-#if 0
-    z->AddIntersection(s1);
-#endif
+    auto z1 = new G4HalfSpaceZone();
+    z1->AddIntersection(s1);
 
     auto hss = new G4HalfSpaceSolid("hsSolid");
     hss->addZone(z);
+    hss->addZone(z1);
 
     auto logicHSS = new G4LogicalVolume(hss,
                                         env_mat,
