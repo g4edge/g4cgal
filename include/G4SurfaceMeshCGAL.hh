@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 class G4Polyhedron;
 class G4TessellatedSolid;
 
@@ -40,6 +42,51 @@ typedef Kernel_ECER::Point_3 Point_3_ECER;
 typedef Kernel_ECER::Vector_3 Vector_3_ECER;
 typedef Kernel_ECER::Plane_3 Plane_3_ECER;
 
+#include <CGAL/Polyhedron_incremental_builder_3.h>
+
+// A modifier creating a triangle with the incremental builder.
+template <class HDS>
+class Build_mesh : public CGAL::Modifier_base<HDS> {
+public:
+    Build_mesh(Surface_mesh *smIn) {sm = smIn;}
+    void operator()(HDS& hds) {
+        CGAL::Polyhedron_incremental_builder_3<HDS> B( hds, true);
+
+        std::cout << sm->num_vertices() << " " << sm->num_faces() << std::endl;
+        B.begin_surface( sm->num_vertices(), sm->num_faces());
+        typedef typename HDS::Vertex   Vertex;
+        typedef typename Vertex::Point Point;
+
+        for (Surface_mesh::Vertex_index vd : sm->vertices()) {
+            auto p = sm->point(vd);
+            B.add_vertex(Point(CGAL::to_double(p.x()),
+                                  CGAL::to_double(p.y()),
+                                  CGAL::to_double(p.z())));
+        }
+
+        int iCount = 0;
+        for (Surface_mesh::Face_index fd : sm->faces()) {
+            std::vector<unsigned int> cell;
+
+            B.begin_facet();
+            std::cout << fd << " ";
+            for (Surface_mesh::Halfedge_index hd : CGAL::halfedges_around_face(sm->halfedge(fd), *sm)) {
+                std::cout << (unsigned int)sm->source(hd) << " ";
+                B.add_vertex_to_facet((unsigned int)sm->source(hd));
+            }
+            std::cout << std::endl;
+            B.end_facet();
+
+            ++iCount;
+        }
+        B.end_surface();
+
+    }
+private:
+    Surface_mesh *sm;
+};
+
+
 #pragma GCC diagnostic pop
 
 #include "G4VSurfaceMesh.hh"
@@ -62,6 +109,8 @@ class G4SurfaceMeshCGAL : public G4VSurfaceMesh
     G4TessellatedSolid* GetG4TessellatedSolid();
     G4Polyhedron* GetG4Polyhedron();
     Surface_mesh GetCGALSurface_mesh();
+    Nef_polyhedron_3_ECER GetCGALNef_polyhedron_3_ECER();
+    Polyhedron_3_ECER GetCGALPolyhedron_3_ECER();
 
     G4SurfaceMeshCGAL* Subtraction(G4SurfaceMeshCGAL* surfaceMesh);
     G4SurfaceMeshCGAL* Union(G4SurfaceMeshCGAL* surfaceMesh);

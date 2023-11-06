@@ -135,6 +135,18 @@ Surface_mesh G4SurfaceMeshCGAL::GetCGALSurface_mesh() {
     return sm;
 }
 
+Nef_polyhedron_3_ECER G4SurfaceMeshCGAL::GetCGALNef_polyhedron_3_ECER() {
+    Nef_polyhedron_3_ECER nef;
+    return nef;
+}
+
+Polyhedron_3_ECER G4SurfaceMeshCGAL::GetCGALPolyhedron_3_ECER() {
+    Polyhedron_3_ECER poly;
+    Build_mesh<Polyhedron_3_ECER::HalfedgeDS> mesh(&sm);
+    poly.delegate(mesh);
+    return poly;
+}
+
 G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::Subtraction(G4SurfaceMeshCGAL* s1)
 {
   Surface_mesh s2 = Surface_mesh();
