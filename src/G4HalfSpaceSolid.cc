@@ -40,14 +40,16 @@ std::vector<G4ThreeVector> G4HalfSpaceSolid::Intersection(const G4ThreeVector& p
     return inter;
 }
 
-Nef_polyhedron_3 G4HalfSpaceSolid::GetNefPolyhedron() const {
-    Nef_polyhedron_3 nef(Nef_polyhedron_3::EMPTY);
+G4SurfaceMeshCGAL* G4HalfSpaceSolid::GetSurfaceMesh() const {
+
+    G4SurfaceMeshCGAL *sm1 = new G4SurfaceMeshCGAL();
 
     for(auto z : _zones) {
-        nef += z->GetNefPolyhedron();
+        auto sm2 = z->GetSurfaceMesh();
+        sm1 = sm1->Union(sm2);
     }
 
-    return nef;
+    return sm1;
 
 }
 
@@ -205,9 +207,8 @@ std::ostream& G4HalfSpaceSolid::StreamInfo(std::ostream& os) const {
 }
 
 void G4HalfSpaceSolid::DescribeYourselfTo(G4VGraphicsScene& scene) const {
-    auto nef = GetNefPolyhedron();
-    G4SurfaceMeshCGAL sm(nef);
-    auto ph = sm.GetG4Polyhedron();
+    auto sm = GetSurfaceMesh();
+    auto ph = sm->GetG4Polyhedron();
     scene.AddPrimitive(*ph);
 
     return;

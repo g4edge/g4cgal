@@ -66,18 +66,37 @@ std::vector<G4ThreeVector> G4HalfSpaceZone::Intersection(const G4ThreeVector& p,
 
 }
 
-Nef_polyhedron_3 G4HalfSpaceZone::GetNefPolyhedron() const {
+G4SurfaceMeshCGAL* G4HalfSpaceZone::GetSurfaceMesh() const {
 
-    Nef_polyhedron_3 nef(Nef_polyhedron_3::COMPLETE);
+    G4SurfaceMeshCGAL *sm1 = new G4SurfaceMeshCGAL();
 
+    G4bool first = true;
     for(auto op : _half_spaces) {
         if(op.first == intersection) {
-            nef *= op.second->GetNefPolyhedron();
+            auto sm2 =  op.second->GetSurfaceMesh();
+            G4cout << "hs intersection " << sm2->NumberOfVertices() << " " << sm2->NumberOfFaces() << G4endl;
+            if (first) {
+                sm1 = sm1->Union(sm2);
+                first = false;
+            }
+            else {
+                sm1 = sm1->Intersection(sm2);
+            }
         }
         else if(op.first == subtraction) {
-            nef -= op.second->GetNefPolyhedron();
+            auto sm2 = op.second->GetSurfaceMesh();
+            G4cout << "hs subtraction " << sm2->NumberOfVertices() << " " << sm2->NumberOfFaces() << G4endl;
+            if (first) {
+                sm1 = sm1->Union(sm2);
+                first = false;
+            }
+            else {
+                sm1 = sm1->Subtraction(sm2);
+            }
         }
     }
 
-    return nef;
+    G4cout << "zone final subtraction " << sm1->NumberOfVertices() << " " << sm1->NumberOfFaces() << G4endl;
+
+    return sm1;
 }

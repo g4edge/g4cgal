@@ -37,34 +37,10 @@ std::vector<G4ThreeVector> G4HalfSpaceSphere::Intersection(const G4ThreeVector& 
     return intersections;
 }
 
-Nef_polyhedron_3 G4HalfSpaceSphere::GetNefPolyhedron() const {
-
-#if 0
-    G4Orb o = G4Orb("test",25);
+G4SurfaceMeshCGAL* G4HalfSpaceSphere::GetSurfaceMesh() const {
+    G4Orb o = G4Orb("test",_r);
     G4Polyhedron *g4poly = o.GetPolyhedron();
-    G4SurfaceMeshCGAL sm;
-    sm.fill(g4poly);
-
-    auto cgpoly = sm.GetCGALPolyhedron_3_ECER();
-    G4cout << cgpoly.is_valid(true) << " " << cgpoly.is_closed() << G4endl;
-#endif
-
-    Nef_polyhedron_3_ECER nef(Nef_polyhedron_3::COMPLETE);
-    nef *= Nef_polyhedron_3(Plane_3(Point_3(_r,0,0),
-                                    Direction_3(1,0,0)));
-    nef *= Nef_polyhedron_3(Plane_3(Point_3(-_r,0,0),
-                                    Direction_3(-1,0,0)));
-
-    nef *= Nef_polyhedron_3(Plane_3(Point_3(0,_r,0),
-                                    Direction_3(0,1,0)));
-    nef *= Nef_polyhedron_3(Plane_3(Point_3(0,-_r,0),
-                                    Direction_3(0,-1,0)));
-
-    nef *= Nef_polyhedron_3(Plane_3(Point_3(0,0,_r),
-                            Direction_3(0,0,1)));
-    nef *= Nef_polyhedron_3(Plane_3(Point_3(0,0,-_r),
-                            Direction_3(0,0,-1)));
-
-
-    return nef;
+    G4SurfaceMeshCGAL *sm = new G4SurfaceMeshCGAL();
+    sm->fill(g4poly);
+    return sm;
 }

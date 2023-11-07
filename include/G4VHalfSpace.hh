@@ -2,21 +2,7 @@
 
 #include "G4VSolid.hh"
 #include "geomdefs.hh"
-
-#include <CGAL/Exact_predicates_exact_constructions_kernel.h>
-#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
-#include <CGAL/Exact_rational.h>
-#include <CGAL/Extended_cartesian.h>
-
-#include <CGAL/Nef_polyhedron_3.h>
-
-typedef CGAL::Exact_rational ER;
-typedef CGAL::Extended_cartesian<ER> Kernel_ECER;
-typedef CGAL::Nef_polyhedron_3<Kernel_ECER> Nef_polyhedron_3;
-typedef Kernel_ECER::Point_3 Point_3;
-typedef Kernel_ECER::Vector_3 Vector_3;
-typedef Kernel_ECER::Plane_3 Plane_3;
-typedef Kernel_ECER::Direction_3 Direction_3;
+#include "G4SurfaceMeshCGAL.hh"
 
 class G4VHalfSpace {
 
@@ -28,7 +14,7 @@ public:
     G4ThreeVector Normal(const G4ThreeVector& p, G4double d) const;
     virtual std::vector<G4ThreeVector> Intersection(const G4ThreeVector& p, const G4ThreeVector &d) const = 0;
 
-    virtual Nef_polyhedron_3 GetNefPolyhedron() const = 0;
+    virtual G4SurfaceMeshCGAL* GetSurfaceMesh() const = 0;
 
     static void QuadraticSolve(G4double a, G4double b, G4double c, G4int &nSoln, G4double &x1, G4double &x2);
 };
