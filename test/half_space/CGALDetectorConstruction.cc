@@ -49,16 +49,17 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
                                        false);
 
 
-    auto p1 = new G4HalfSpacePlane(G4ThreeVector(25*mm-25,0,0),G4ThreeVector(1,0,0));
-    auto p2 = new G4HalfSpacePlane(G4ThreeVector(-25*mm-25,0,0),G4ThreeVector(-1,0,0));
-    auto p3 = new G4HalfSpacePlane(G4ThreeVector(0,25*mm-25,0),G4ThreeVector(0,1,0));
-    auto p4 = new G4HalfSpacePlane(G4ThreeVector(0,-25*mm-25,0),G4ThreeVector(0,-1,0));
-    auto p5 = new G4HalfSpacePlane(G4ThreeVector(0,0,25*mm-25),G4ThreeVector(0,0,1));
-    auto p6 = new G4HalfSpacePlane(G4ThreeVector(0,0,-25*mm-25),G4ThreeVector(0,0,-1));
-    auto p7 = new G4HalfSpacePlane(G4ThreeVector(0,-12.5*mm,-12.5*mm), G4ThreeVector(0,1,1));
+    auto p1 = new G4HalfSpacePlane(G4ThreeVector(25*mm,0,0),G4ThreeVector(1,0,0));
+    auto p2 = new G4HalfSpacePlane(G4ThreeVector(-25*mm,0,0),G4ThreeVector(-1,0,0));
+    auto p3 = new G4HalfSpacePlane(G4ThreeVector(0,25*mm,0),G4ThreeVector(0,1,0));
+    auto p4 = new G4HalfSpacePlane(G4ThreeVector(0,-25*mm,0),G4ThreeVector(0,-1,0));
+    auto p5 = new G4HalfSpacePlane(G4ThreeVector(0,0,25*mm),G4ThreeVector(0,0,1));
+    auto p6 = new G4HalfSpacePlane(G4ThreeVector(0,0,-25*mm),G4ThreeVector(0,0,-1));
+    auto p7 = new G4HalfSpacePlane(G4ThreeVector(-12.5*mm,-12.5*mm,-12.5*mm), G4ThreeVector(1,1,0));
     auto p8 = new G4HalfSpacePlane(G4ThreeVector(0,-12.5*mm,-12.5*mm), G4ThreeVector(1,0,1));
 
     auto s1 = new G4HalfSpaceSphere(12.5*mm);
+    auto s2 = new G4HalfSpaceSphere(25.0*mm);
 
     auto z = new G4HalfSpaceZone();
     z->AddIntersection(p1);
@@ -67,12 +68,13 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     z->AddIntersection(p4);
     z->AddIntersection(p5);
     z->AddIntersection(p6);
-    //z->AddSubtraction(p7);
+    z->AddSubtraction(p7);
     //z->AddSubtraction(p8);
     //z->AddIntersection(s1);
 
     auto z1 = new G4HalfSpaceZone();
-    z1->AddIntersection(s1);
+    //z1->AddIntersection(s1);
+    z1->AddIntersection(s2);
 
     auto hss = new G4HalfSpaceSolid("hsSolid");
     hss->addZone(z);

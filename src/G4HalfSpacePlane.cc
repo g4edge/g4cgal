@@ -52,17 +52,17 @@ std::vector<G4ThreeVector> G4HalfSpacePlane::Intersection(const G4ThreeVector& p
 G4SurfaceMeshCGAL* G4HalfSpacePlane::GetSurfaceMesh() const {
 
     Nef_polyhedron_3_ECER nef = Nef_polyhedron_3_ECER(Nef_polyhedron_3_ECER::COMPLETE);
-    nef *= Nef_polyhedron_3_ECER(Plane_3(Point_3(9e99,0,0),
+    nef *= Nef_polyhedron_3_ECER(Plane_3(Point_3(1000000,0,0),
                                          Direction_3(1, 0, 0)));
-    nef *= Nef_polyhedron_3_ECER(Plane_3(Point_3(-9e99,0,0),
+    nef *= Nef_polyhedron_3_ECER(Plane_3(Point_3(-1000000,0,0),
                                          Direction_3(-1, 0, 0)));
-    nef *= Nef_polyhedron_3_ECER(Plane_3(Point_3(0,9e99,0),
+    nef *= Nef_polyhedron_3_ECER(Plane_3(Point_3(0,1000000,0),
                                          Direction_3(0, 1, 0)));
-    nef *= Nef_polyhedron_3_ECER(Plane_3(Point_3(0,-9e99,0),
+    nef *= Nef_polyhedron_3_ECER(Plane_3(Point_3(0,-1000000,0),
                                          Direction_3(0, -1, 0)));
-    nef *= Nef_polyhedron_3_ECER(Plane_3(Point_3(0,0,9e99),
+    nef *= Nef_polyhedron_3_ECER(Plane_3(Point_3(0,0,1000000),
                                          Direction_3(0, 0, 1)));
-    nef *= Nef_polyhedron_3_ECER(Plane_3(Point_3(0,0,-9e99),
+    nef *= Nef_polyhedron_3_ECER(Plane_3(Point_3(0,0,-1000000),
                                          Direction_3(0, 0, -1)));
     nef *= Nef_polyhedron_3_ECER(Plane_3(Point_3(_p0.x(), _p0.y(), _p0.z()),
                                          Direction_3(_n.x(), _n.y(), _n.z())));
