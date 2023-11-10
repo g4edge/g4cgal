@@ -5,8 +5,10 @@
 
 #include "G4HalfSpacePlane.hh"
 #include "G4HalfSpaceSphere.hh"
+#include "G4HalfSpaceAARBox.hh"
 #include "G4HalfSpaceZone.hh"
 #include "G4HalfSpaceSolid.hh"
+
 
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
@@ -48,7 +50,7 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
                                        0,
                                        false);
 
-
+#if 0
     auto p1 = new G4HalfSpacePlane(G4ThreeVector(25*mm,0,0),G4ThreeVector(1,0,0));
     auto p2 = new G4HalfSpacePlane(G4ThreeVector(-25*mm,0,0),G4ThreeVector(-1,0,0));
     auto p3 = new G4HalfSpacePlane(G4ThreeVector(0,25*mm,0),G4ThreeVector(0,1,0));
@@ -57,10 +59,6 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     auto p6 = new G4HalfSpacePlane(G4ThreeVector(0,0,-25*mm),G4ThreeVector(0,0,-1));
     auto p7 = new G4HalfSpacePlane(G4ThreeVector(-12.5*mm,-12.5*mm,-12.5*mm), G4ThreeVector(1,1,0));
     auto p8 = new G4HalfSpacePlane(G4ThreeVector(0,-12.5*mm,-12.5*mm), G4ThreeVector(1,0,1));
-
-    auto s1 = new G4HalfSpaceSphere(12.5*mm);
-    auto s2 = new G4HalfSpaceSphere(25.0*mm);
-
     auto z = new G4HalfSpaceZone();
     z->AddIntersection(p1);
     z->AddIntersection(p2);
@@ -68,17 +66,15 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     z->AddIntersection(p4);
     z->AddIntersection(p5);
     z->AddIntersection(p6);
-    z->AddSubtraction(p7);
-    //z->AddSubtraction(p8);
-    //z->AddIntersection(s1);
-
-    auto z1 = new G4HalfSpaceZone();
-    //z1->AddIntersection(s1);
-    z1->AddIntersection(s2);
-
     auto hss = new G4HalfSpaceSolid("hsSolid");
     hss->addZone(z);
-    hss->addZone(z1);
+#endif
+
+    auto b1 = new G4HalfSpaceAARBox(-125*mm, 0*mm,-25*mm, 25*mm, -25*mm, 25*mm);
+    auto z = new G4HalfSpaceZone();
+    z->AddIntersection(b1);
+    auto hss = new G4HalfSpaceSolid("hsSolid");
+    hss->addZone(z);
 
     auto logicHSS = new G4LogicalVolume(hss,
                                         env_mat,
