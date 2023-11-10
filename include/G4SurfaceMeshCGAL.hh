@@ -24,6 +24,7 @@ typedef Kernel::Point_3 Point;
 typedef Kernel::Vector_3 Vector;
 typedef CGAL::Surface_mesh<Kernel::Point_3> Surface_mesh;
 typedef CGAL::Aff_transformation_3<Kernel> Aff_transformation_3;
+typedef Kernel::Vector_3 Vector_3;
 
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
@@ -41,6 +42,7 @@ typedef CGAL::Surface_mesh<Kernel_ECER::Point_3> Surface_mesh_3_ECER;
 typedef Kernel_ECER::Point_3 Point_3_ECER;
 typedef Kernel_ECER::Vector_3 Vector_3_ECER;
 typedef Kernel_ECER::Plane_3 Plane_3_ECER;
+typedef Kernel_ECER::Aff_transformation_3 Aff_transform_3_ECER;
 
 #include <CGAL/Polyhedron_incremental_builder_3.h>
 
@@ -115,6 +117,8 @@ class G4SurfaceMeshCGAL : public G4VSurfaceMesh
     G4SurfaceMeshCGAL* Subtraction(G4SurfaceMeshCGAL* surfaceMesh);
     G4SurfaceMeshCGAL* Union(G4SurfaceMeshCGAL* surfaceMesh);
     G4SurfaceMeshCGAL* Intersection(G4SurfaceMeshCGAL* surfaceMesh);
+
+    void Translate(G4double dx, G4double dy, G4double dz);
 
     void AddVertex(double x, double y, double z);
     void AddFace(int i1, int i2, int i3);

@@ -5,6 +5,7 @@
 #include "G4TriangularFacet.hh"
 
 #include <CGAL/Polygon_mesh_processing/corefinement.h>
+#include <CGAL/Polygon_mesh_processing/transform.h>
 #include <CGAL/boost/graph/helpers.h>
 
 #include <vector>
@@ -178,6 +179,13 @@ G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::Intersection(G4SurfaceMeshCGAL* s1)
 
   return res;
 }
+
+void G4SurfaceMeshCGAL::Translate(G4double dx, G4double dy, G4double dz){
+  auto tr3 = Vector_3(dx,dy,dz);
+  auto at3 = Aff_transformation_3(CGAL::TRANSLATION, tr3);
+  CGAL::Polygon_mesh_processing::transform(at3,sm);
+}
+
 
 void G4SurfaceMeshCGAL::AddVertex(double x, double y, double z)
 {
