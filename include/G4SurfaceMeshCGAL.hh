@@ -4,6 +4,7 @@
 
 class G4Polyhedron;
 class G4TessellatedSolid;
+#include "G4ThreeVector.hh"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
@@ -119,6 +120,7 @@ class G4SurfaceMeshCGAL : public G4VSurfaceMesh
     G4SurfaceMeshCGAL* Intersection(G4SurfaceMeshCGAL* surfaceMesh);
 
     void Translate(G4double dx, G4double dy, G4double dz);
+    void Translate(const G4ThreeVector &t);
 
     void AddVertex(double x, double y, double z);
     void AddFace(int i1, int i2, int i3);

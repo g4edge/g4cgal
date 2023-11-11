@@ -186,6 +186,9 @@ void G4SurfaceMeshCGAL::Translate(G4double dx, G4double dy, G4double dz){
   CGAL::Polygon_mesh_processing::transform(at3,sm);
 }
 
+void G4SurfaceMeshCGAL::Translate(const G4ThreeVector &t) {
+    Translate(t.x(), t.y(), t.z());
+}
 
 void G4SurfaceMeshCGAL::AddVertex(double x, double y, double z)
 {
