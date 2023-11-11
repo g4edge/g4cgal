@@ -25,8 +25,6 @@ G4HalfSpaceAARBox::G4HalfSpaceAARBox(G4double xmin, G4double xmax,
     _hsZone->AddIntersection(p4);
     _hsZone->AddIntersection(p5);
     _hsZone->AddIntersection(p6);
-
-
 }
 
 G4HalfSpaceAARBox::~G4HalfSpaceAARBox() {
