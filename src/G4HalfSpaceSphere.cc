@@ -37,6 +37,10 @@ std::vector<G4ThreeVector> G4HalfSpaceSphere::Intersection(const G4ThreeVector& 
     return intersections;
 }
 
+void G4HalfSpaceSphere::Translate(const G4ThreeVector& t) {}
+void G4HalfSpaceSphere::Rotate(const G4RotationMatrix& r) {}
+void G4HalfSpaceSphere::Transform(const G4AffineTransform& a) {}
+
 G4SurfaceMeshCGAL* G4HalfSpaceSphere::GetSurfaceMesh() const {
     G4Orb o = G4Orb("test",_r);
     G4Polyhedron *g4poly = o.GetPolyhedron();

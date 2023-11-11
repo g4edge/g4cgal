@@ -49,6 +49,11 @@ std::vector<G4ThreeVector> G4HalfSpacePlane::Intersection(const G4ThreeVector& p
     return intersections;
 }
 
+void G4HalfSpacePlane::Translate(const G4ThreeVector& t) {}
+void G4HalfSpacePlane::Rotate(const G4RotationMatrix& r) {}
+void G4HalfSpacePlane::Transform(const G4AffineTransform& a) {}
+
+
 G4SurfaceMeshCGAL* G4HalfSpacePlane::GetSurfaceMesh() const {
 
     Nef_polyhedron_3_ECER nef = Nef_polyhedron_3_ECER(Nef_polyhedron_3_ECER::COMPLETE);

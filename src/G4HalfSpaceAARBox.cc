@@ -40,6 +40,10 @@ std::vector<G4ThreeVector> G4HalfSpaceAARBox::Intersection(const G4ThreeVector& 
     return intersections;
 }
 
+void G4HalfSpaceAARBox::Translate(const G4ThreeVector& t) {}
+void G4HalfSpaceAARBox::Rotate(const G4RotationMatrix& r) {}
+void G4HalfSpaceAARBox::Transform(const G4AffineTransform& a) {}
+
 G4SurfaceMeshCGAL* G4HalfSpaceAARBox::GetSurfaceMesh() const {
     G4double xc = (_xmax + _xmin)/2.0;
     G4double yc = (_ymax + _ymin)/2.0;

@@ -66,6 +66,24 @@ std::vector<G4ThreeVector> G4HalfSpaceZone::Intersection(const G4ThreeVector& p,
 
 }
 
+void G4HalfSpaceZone::Translate(const G4ThreeVector& t) {
+    for(auto op : _half_spaces) {
+        op.second->Translate(t);
+    }
+}
+
+void G4HalfSpaceZone::Rotate(const G4RotationMatrix& r) {
+    for(auto op : _half_spaces) {
+        op.second->Rotate(r);
+    }
+}
+
+void G4HalfSpaceZone::Transform(const G4AffineTransform& a) {
+    for(auto op : _half_spaces) {
+        op.second->Transform(a);
+    }
+}
+
 G4SurfaceMeshCGAL* G4HalfSpaceZone::GetSurfaceMesh() const {
 
     G4SurfaceMeshCGAL *sm1 = new G4SurfaceMeshCGAL();

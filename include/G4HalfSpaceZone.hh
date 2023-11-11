@@ -16,6 +16,10 @@ public:
     virtual G4double Sdf(const G4ThreeVector &p) const override;
     virtual std::vector<G4ThreeVector> Intersection(const G4ThreeVector& p, const G4ThreeVector &d) const override;
 
+    virtual void Translate(const G4ThreeVector& t) override;
+    virtual void Rotate(const G4RotationMatrix& r) override;
+    virtual void Transform(const G4AffineTransform& a) override;
+
     virtual G4SurfaceMeshCGAL* GetSurfaceMesh() const override;
 
 protected:
