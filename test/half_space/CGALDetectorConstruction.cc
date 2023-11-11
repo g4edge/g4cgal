@@ -70,11 +70,26 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     hss->addZone(z);
 #endif
 
-    auto b1 = new G4HalfSpaceAARBox(-125*mm, 0*mm,-25*mm, 25*mm, -25*mm, 25*mm);
+#if 0
+    auto b1 = new G4HalfSpaceAARBox(-25*mm, 25*mm,-25*mm, 25*mm, -25*mm, 25*mm);
+    auto b2 = new G4HalfSpaceAARBox(-0*mm, 50*mm,0*m, 50*mm, 0*mm, 50*mm);
     auto z = new G4HalfSpaceZone();
     z->AddIntersection(b1);
+    z->AddSubtraction(b2);
     auto hss = new G4HalfSpaceSolid("hsSolid");
     hss->addZone(z);
+#endif
+
+#if 1
+    auto s1 = new G4HalfSpaceSphere(50*mm, G4ThreeVector(0,0,0));
+    auto s2 = new G4HalfSpaceSphere(50*mm, G4ThreeVector(25*mm,25*mm,25*mm));
+    auto b2 = new G4HalfSpaceAARBox(0*mm, 50*mm,0*m, 50*mm, 0*mm, 50*mm);
+    auto z = new G4HalfSpaceZone();
+    z->AddIntersection(s1);
+    z->AddSubtraction(b2);
+    auto hss = new G4HalfSpaceSolid("hsSolid");
+    hss->addZone(z);
+#endif
 
     auto logicHSS = new G4LogicalVolume(hss,
                                         env_mat,
