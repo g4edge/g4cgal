@@ -120,9 +120,10 @@ G4double G4HalfSpaceSolid::DistanceToIn(const G4ThreeVector& p,
     });
     std::sort(inter.begin(), inter.end(), g4tvSort);
 
-    if(inter.size() > 0) {
-        if (SurfaceNormal(inter[0]).dot(v) <= 0) {
-            return (inter[0] - p).mag();
+    //if(inter.size() > 0) {
+    for(auto i : inter) {
+        if (SurfaceNormal(i).dot(v) <= 0) {
+            return (i - p).mag();
         }
     }
 
