@@ -53,12 +53,6 @@ void G4HalfSpaceAARBox::Transform(const G4AffineTransform& a) {
 }
 
 G4SurfaceMeshCGAL* G4HalfSpaceAARBox::GetSurfaceMesh() const {
-    //G4double xc = (_xmax + _xmin)/2.0;
-    //G4double yc = (_ymax + _ymin)/2.0;
-    //G4double zc = (_zmax + _zmin)/2.0;
-    //G4Box b = G4Box("temp",(_xmax - _xmin)/2.0 , (_ymax - _ymin)/2.0, (_zmax - _zmin)/2.0);
-    //G4Polyhedron *g4poly = b.GetPolyhedron();
-
     G4SurfaceMeshCGAL *sm = _hsZone->GetSurfaceMesh();
     return sm;
 }
