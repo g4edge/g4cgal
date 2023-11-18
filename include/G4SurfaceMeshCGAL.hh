@@ -121,6 +121,7 @@ class G4SurfaceMeshCGAL : public G4VSurfaceMesh
 
     void Translate(G4double dx, G4double dy, G4double dz);
     void Translate(const G4ThreeVector &t);
+    void Rotate(const G4ThreeVector &axis, G4double angle);
 
     void AddVertex(double x, double y, double z);
     void AddFace(int i1, int i2, int i3);

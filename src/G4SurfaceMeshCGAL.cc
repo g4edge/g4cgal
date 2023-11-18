@@ -190,6 +190,37 @@ void G4SurfaceMeshCGAL::Translate(const G4ThreeVector &t) {
     Translate(t.x(), t.y(), t.z());
 }
 
+void G4SurfaceMeshCGAL::Rotate(const G4ThreeVector &a, G4double angle) {
+    G4double rot[3][3];
+    auto normAxis = a / a.mag();
+
+    auto cosAngle = cos(-angle);
+    auto sinAngle = sin(-angle);
+    auto verSin = 1 - cosAngle;
+
+    auto x = normAxis.x();
+    auto y = normAxis.y();
+    auto z = normAxis.z();
+
+    rot[0][0] = (verSin * x * x) + cosAngle;
+    rot[0][1] = (verSin * x * y) - (z * sinAngle);
+    rot[0][2] = (verSin * x * z) + (y * sinAngle);
+
+    rot[1][0] = (verSin * y * x) + (z * sinAngle);
+    rot[1][1] = (verSin * y * y) + cosAngle;
+    rot[1][2] = (verSin * y * z) - (x * sinAngle);
+
+    rot[2][0] = (verSin * z * x) - (y * sinAngle);
+    rot[2][1] = (verSin * z * y) + (x * sinAngle);
+    rot[2][2] = (verSin * z * z) + cosAngle;
+
+    auto rotn = Aff_transformation_3(rot[0][0],rot[0][1],rot[0][2],
+                                     rot[1][0],rot[1][1],rot[1][2],
+                                     rot[2][0],rot[2][1],rot[2][2],1);
+    CGAL::Polygon_mesh_processing::transform(rotn,sm);
+}
+
+
 void G4SurfaceMeshCGAL::AddVertex(double x, double y, double z)
 {
   Point p(x, y, z);
