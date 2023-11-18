@@ -1,6 +1,10 @@
 #include "G4HalfSpaceXACircularCylinder.hh"
+
 #include "CLHEP/Matrix/Matrix.h"
 #include "CLHEP/Matrix/Vector.h"
+
+#include "G4SystemOfUnits.hh"
+#include "G4Tubs.hh"
 
 G4HalfSpaceXACircularCylinder::G4HalfSpaceXACircularCylinder() {}
 
@@ -49,7 +53,6 @@ std::vector<G4ThreeVector> G4HalfSpaceXACircularCylinder::Intersection(const G4T
         inter.push_back(l2*d+p);
     }
 
-    //G4cout << "return intersections" << G4endl;
     return inter;
 }
 
@@ -66,5 +69,12 @@ void G4HalfSpaceXACircularCylinder::Transform(const G4AffineTransform& a) {
 }
 
 G4SurfaceMeshCGAL* G4HalfSpaceXACircularCylinder::GetSurfaceMesh() const {
-    return new G4SurfaceMeshCGAL();
+    G4Tubs t = G4Tubs("test",0,_r,1000000000,0,2*M_PI*rad);
+    G4Polyhedron *g4poly = t.GetPolyhedron();
+    G4SurfaceMeshCGAL *sm = new G4SurfaceMeshCGAL();
+    sm->fill(g4poly);
+    sm->Translate(0, _y0,_z0);
+    sm->Rotate(G4ThreeVector(0,1,0), M_PI_2);
+
+    return sm;
 }
