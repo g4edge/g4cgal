@@ -6,6 +6,10 @@
 #include "G4HalfSpacePlane.hh"
 #include "G4HalfSpaceSphere.hh"
 #include "G4HalfSpaceAARBox.hh"
+#include "G4HalfSpaceXACircularCylinder.hh"
+#include "G4HalfSpaceYACircularCylinder.hh"
+#include "G4HalfSpaceZACircularCylinder.hh"
+#include "G4HalfSpaceXAEllipticalCylinder.hh"
 #include "G4HalfSpaceZone.hh"
 #include "G4HalfSpaceSolid.hh"
 
@@ -70,7 +74,7 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     hss->addZone(z);
 #endif
 
-#if 1
+#if 0
     auto b1 = new G4HalfSpaceAARBox(-25*mm, 25*mm,-25*mm, 25*mm, -25*mm, 25*mm);
     auto b2 = new G4HalfSpaceAARBox(-0*mm, 50*mm,0*m, 50*mm, 0*mm, 50*mm);
     auto z = new G4HalfSpaceZone();
@@ -79,11 +83,10 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     auto hss = new G4HalfSpaceSolid("hsSolid");
     hss->addZone(z);
     hss->Rotate(G4RotationMatrix(3.14159/8,0,0));
-    //hss->Translate(G4ThreeVector(30,30,30));
-
+    //hss->Translate(G4ThreeVector(30,30,30))
 #endif
 
-#if 0
+#if 1
     auto s1 = new G4HalfSpaceSphere(50*mm, G4ThreeVector(0,0,0));
     auto s2 = new G4HalfSpaceSphere(50*mm, G4ThreeVector(25*mm,25*mm,25*mm));
     auto b2 = new G4HalfSpaceAARBox(0*mm, 50*mm,0*m, 50*mm, 0*mm, 50*mm);
@@ -94,8 +97,64 @@ G4VPhysicalVolume* CGALDetectorConstruction::Construct() {
     z2->AddIntersection(b2);
     auto hss = new G4HalfSpaceSolid("hsSolid");
     hss->addZone(z);
-    //hss->addZone(z2);
 #endif
+
+#if 0
+    auto c1 = new G4HalfSpaceXACircularCylinder(0,0,25*mm);
+    auto p1 = new G4HalfSpacePlane(G4ThreeVector(25*mm,0,0),
+                                   G4ThreeVector(1,0,0));
+    auto p2 = new G4HalfSpacePlane(G4ThreeVector(-25*mm,0,0),
+                                   G4ThreeVector(-1,0,0));
+    auto z = new G4HalfSpaceZone();
+    z->AddIntersection(c1);
+    z->AddIntersection(p1);
+    z->AddIntersection(p2);
+    auto hss = new G4HalfSpaceSolid("hsSolid");
+    hss->addZone(z);
+#endif
+
+#if 0
+    auto c1 = new G4HalfSpaceYACircularCylinder(0,0,25*mm);
+    auto p1 = new G4HalfSpacePlane(G4ThreeVector(0, 25*mm,0),
+                                   G4ThreeVector(0,1,0));
+    auto p2 = new G4HalfSpacePlane(G4ThreeVector(0, -25*mm,0),
+                                   G4ThreeVector(0,-1,0));
+    auto z = new G4HalfSpaceZone();
+    z->AddIntersection(c1);
+    z->AddIntersection(p1);
+    z->AddIntersection(p2);
+    auto hss = new G4HalfSpaceSolid("hsSolid");
+    hss->addZone(z);
+#endif
+
+#if 0
+    auto c1 = new G4HalfSpaceZACircularCylinder(0,0,25*mm);
+    auto p1 = new G4HalfSpacePlane(G4ThreeVector(0, 0, 25*mm),
+                                   G4ThreeVector(0,0, 1));
+    auto p2 = new G4HalfSpacePlane(G4ThreeVector(0, 0,-25*mm),
+                                   G4ThreeVector(0,0, -1));
+    auto z = new G4HalfSpaceZone();
+    z->AddIntersection(c1);
+    z->AddIntersection(p1);
+    z->AddIntersection(p2);
+    auto hss = new G4HalfSpaceSolid("hsSolid");
+    hss->addZone(z);
+#endif
+
+#if 0
+    auto e1 = new G4HalfSpaceXAEllipticalCylinder(0,0,25*mm,50*mm);
+    auto p1 = new G4HalfSpacePlane(G4ThreeVector(0, 0, 25*mm),
+                                   G4ThreeVector(0,0, 1));
+    auto p2 = new G4HalfSpacePlane(G4ThreeVector(0, 0,-25*mm),
+                                   G4ThreeVector(0,0, -1));
+    auto z = new G4HalfSpaceZone();
+    z->AddIntersection(e1);
+    z->AddIntersection(p1);
+    z->AddIntersection(p2);
+    auto hss = new G4HalfSpaceSolid("hsSolid");
+    hss->addZone(z);
+#endif
+
 
     auto logicHSS = new G4LogicalVolume(hss,
                                         env_mat,

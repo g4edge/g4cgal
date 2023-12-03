@@ -37,14 +37,14 @@ void CGALPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     //G4ThreeVector v(1, 0, 0);
     //fParticleGun->SetParticlePosition(G4ThreeVector(-75 * mm, 0*mm, 0*mm));
 
-    G4ThreeVector v(1, 0, 0);
-    fParticleGun->SetParticlePosition(G4ThreeVector(-75 * mm, 75*(G4UniformRand()-0.5) *mm, 75*(G4UniformRand()-0.5) * mm));
+    //G4ThreeVector v(1, 0, 0);
+    //fParticleGun->SetParticlePosition(G4ThreeVector(-75 * mm, 75*(G4UniformRand()-0.5) *mm, 75*(G4UniformRand()-0.5) * mm));
 
     //G4ThreeVector v(0, 1, 0);
     //fParticleGun->SetParticlePosition(G4ThreeVector(75*(G4UniformRand()-0.5) *mm, -75*mm, 75*(G4UniformRand()-0.5) * mm));
 
-    //G4ThreeVector v(0, 0, 1);
-    //fParticleGun->SetParticlePosition(G4ThreeVector(75*(G4UniformRand()-0.5) *mm, 75*(G4UniformRand()-0.5) * mm, -75*mm));
+    G4ThreeVector v(0, 0, 1);
+    fParticleGun->SetParticlePosition(G4ThreeVector(75*(G4UniformRand()-0.5) *mm, 75*(G4UniformRand()-0.5) * mm, -75*mm));
 
     //auto r = G4UniformRand();
     //G4ThreeVector v(0, 2*(r-0.5), 1-2*(r-0.5));
