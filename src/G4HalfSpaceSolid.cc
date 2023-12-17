@@ -228,7 +228,7 @@ std::ostream& G4HalfSpaceSolid::StreamInfo(std::ostream& os) const {
 void G4HalfSpaceSolid::DescribeYourselfTo(G4VGraphicsScene& scene) const {
     auto sm = GetSurfaceMesh();
     auto ph = sm->GetG4Polyhedron();
-    scene.AddPrimitive(*ph);
+    scene.AddPrimitive(*((G4Polyhedron*)ph));
 
     return;
 }
