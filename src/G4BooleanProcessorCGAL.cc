@@ -19,7 +19,8 @@ G4PolyhedronArbitrary* G4BooleanProcessorCGAL::Intersection(G4Polyhedron* p1, G4
   sm1->fill(p1);
   sm2->fill(p2);
 
-  G4SurfaceMeshCGAL* sm3 = sm1->Intersection(sm2);
+  G4bool valid = false;
+  G4SurfaceMeshCGAL* sm3 = sm1->Intersection(sm2, valid);
 
   G4PolyhedronArbitrary* ap = sm3->GetPolyhedronArbitrary();
 
@@ -43,7 +44,8 @@ G4PolyhedronArbitrary* G4BooleanProcessorCGAL::Union(G4Polyhedron* p1, G4Polyhed
   sm1->fill(p1);
   sm2->fill(p2);
 
-  G4SurfaceMeshCGAL* sm3 = sm1->Union(sm2);
+  G4bool valid = false;
+  G4SurfaceMeshCGAL* sm3 = sm1->Union(sm2, valid);
   G4PolyhedronArbitrary* ap = sm3->GetPolyhedronArbitrary();
   iOperation++;
 
@@ -65,7 +67,8 @@ G4PolyhedronArbitrary* G4BooleanProcessorCGAL::Subtraction(G4Polyhedron* p1, G4P
   sm1->fill(p1);
   sm2->fill(p2);
 
-  G4SurfaceMeshCGAL* sm3 = sm1->Subtraction(sm2);
+  G4bool valid = false;
+  G4SurfaceMeshCGAL* sm3 = sm1->Subtraction(sm2, valid);
   G4PolyhedronArbitrary* ap = sm3->GetPolyhedronArbitrary();
   iOperation++;
 
@@ -102,7 +105,14 @@ G4SurfaceMeshCGAL* G4BooleanProcessorCGAL::ProcessSurfaceMesh(const G4VSolid *bs
 #endif
     auto sm1 = G4BooleanProcessorCGAL::ProcessSurfaceMesh(solid1);
     auto sm2 = G4BooleanProcessorCGAL::ProcessSurfaceMesh(solid2);
-    auto sm = sm1->Union(sm2);
+
+    G4bool valid = false;
+    auto sm = sm1->Union(sm2, valid);
+
+    if(!valid) {
+      G4cout << "G4BooleanProcessorCGAL::ProcessSurfaceMesh> union failure " << solid1->GetName() << " " << solid2->GetName() << G4endl;
+    }
+
     meshCache[bs->GetName()] = sm;
     return sm;
   }
@@ -120,7 +130,14 @@ G4SurfaceMeshCGAL* G4BooleanProcessorCGAL::ProcessSurfaceMesh(const G4VSolid *bs
 
     auto sm1 = G4BooleanProcessorCGAL::ProcessSurfaceMesh(solid1);
     auto sm2 = G4BooleanProcessorCGAL::ProcessSurfaceMesh(solid2);
-    auto sm = sm1->Intersection(sm2);
+
+    G4bool valid = false;
+    auto sm = sm1->Intersection(sm2, valid);
+
+    if(!valid) {
+      G4cout << "G4BooleanProcessorCGAL::ProcessSurfaceMesh> intersection failure " << solid1->GetName() << " " << solid2->GetName() << G4endl;
+    }
+
     meshCache[bs->GetName()] = sm;
     return sm;
   }
@@ -138,7 +155,14 @@ G4SurfaceMeshCGAL* G4BooleanProcessorCGAL::ProcessSurfaceMesh(const G4VSolid *bs
 
     auto sm1 = G4BooleanProcessorCGAL::ProcessSurfaceMesh(solid1);
     auto sm2 = G4BooleanProcessorCGAL::ProcessSurfaceMesh(solid2);
-    auto sm = sm1->Subtraction(sm2);
+
+    G4bool valid = false;
+    auto sm = sm1->Subtraction(sm2, valid);
+
+    if(!valid) {
+      G4cout << "G4BooleanProcessorCGAL::ProcessSurfaceMesh> subtraction failure " << solid1->GetName() << " " << solid2->GetName() << G4endl;
+    }
+
     meshCache[bs->GetName()] = sm;
     return sm;
   }
@@ -175,7 +199,8 @@ G4SurfaceMeshCGAL* G4BooleanProcessorCGAL::ProcessSurfaceMesh(const G4VSolid *bs
       const G4Transform3D transform = ((G4MultiUnion*)bs)->GetTransformation(i);
       G4DisplacedSolid dispSolidB("placedB", solidB, transform);
       auto solidB_SM = ProcessSurfaceMesh(&dispSolidB);
-      solidA_SM = solidA_SM->Union(solidB_SM);
+      G4bool valid = false;
+      solidA_SM = solidA_SM->Union(solidB_SM, valid);
     }
     meshCache[bs->GetName()] = solidA_SM;
     return solidA_SM;

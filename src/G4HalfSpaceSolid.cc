@@ -64,7 +64,8 @@ G4SurfaceMeshCGAL* G4HalfSpaceSolid::GetSurfaceMesh() const {
 
     for(auto z : _zones) {
         auto sm2 = z->GetSurfaceMesh();
-        sm1 = sm1->Union(sm2);
+        G4bool valid;
+        sm1 = sm1->Union(sm2, valid);
     }
 
     return sm1;

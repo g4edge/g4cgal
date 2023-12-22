@@ -143,14 +143,10 @@ Polyhedron_3_ECER G4SurfaceMeshCGAL::GetCGALPolyhedron_3_ECER() {
   return poly;
 }
 
-G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::Subtraction(G4SurfaceMeshCGAL* s1)
+G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::Subtraction(G4SurfaceMeshCGAL* s1, G4bool &valid)
 {
   Surface_mesh_3 s2 = Surface_mesh_3();
-  auto valid = CGAL::Polygon_mesh_processing::corefine_and_compute_difference(sm, s1->sm, s2);
-
-  if(!valid) {
-    exit(1);
-  }
+  valid = CGAL::Polygon_mesh_processing::corefine_and_compute_difference(sm, s1->sm, s2);
 
 #ifdef G4CGAL_DEBUG
   G4cout << "G4SurfaceMeshCGAL::Subtraction> valid " << valid << G4endl;
@@ -162,14 +158,11 @@ G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::Subtraction(G4SurfaceMeshCGAL* s1)
   return res;
 }
 
-G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::Union(G4SurfaceMeshCGAL* s1)
+G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::Union(G4SurfaceMeshCGAL* s1, G4bool &valid)
 {
   Surface_mesh_3 s2 = Surface_mesh_3();
-  auto valid = CGAL::Polygon_mesh_processing::corefine_and_compute_union(sm, s1->sm, s2);
+  valid = CGAL::Polygon_mesh_processing::corefine_and_compute_union(sm, s1->sm, s2);
 
-  if(!valid) {
-    exit(1);
-  }
 #ifdef G4CGAL_DEBUG
   G4cout << "G4SurfaceMeshCGAL::Union> valid " << valid << G4endl;
 #endif
@@ -180,14 +173,10 @@ G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::Union(G4SurfaceMeshCGAL* s1)
   return res;
 }
 
-G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::Intersection(G4SurfaceMeshCGAL* s1)
+G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::Intersection(G4SurfaceMeshCGAL* s1, G4bool &valid)
 {
   Surface_mesh_3 s2 = Surface_mesh_3();
-  auto valid = CGAL::Polygon_mesh_processing::corefine_and_compute_intersection(sm, s1->sm, s2);
-
-  if(!valid) {
-    exit(1);
-  }
+  valid = CGAL::Polygon_mesh_processing::corefine_and_compute_intersection(sm, s1->sm, s2);
 
 #ifdef G4CGAL_DEBUG
   G4cout << "G4SurfaceMeshCGAL::Intersection> valid " << valid << G4endl;
@@ -198,83 +187,6 @@ G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::Intersection(G4SurfaceMeshCGAL* s1)
 
   return res;
 }
-
-/*
-G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::SubtractionConsecutive(G4SurfaceMeshCGAL* s1) {
-
-    Surface_mesh_3 sm2 = Surface_mesh_3();
-
-    Exact_point_map mesh1_exact_points = sm.add_property_map<vertex_descriptor,EPECK::Point_3>("v:exact_point").first;
-    Exact_point_map mesh2_exact_points = s1->sm.add_property_map<vertex_descriptor,EPECK::Point_3>("v:exact_point").first;
-    Exact_point_map mesh3_exact_points = s1->sm.add_property_map<vertex_descriptor,EPECK::Point_3>("v:exact_point").first;
-
-    Exact_vertex_point_map mesh1_vpm(mesh1_exact_points, sm);
-    Exact_vertex_point_map mesh2_vpm(mesh2_exact_points, s1->sm);
-    Exact_vertex_point_map mesh3_vpm(mesh2_exact_points, s1->sm);
-
-    CGAL::Polygon_mesh_processing::corefine_and_compute_difference(sm,
-                                                                   s1->sm,
-                                                                   sm2,
-                                                                   CGAL::parameters::vertex_point_map(mesh1_vpm),
-                                                                   CGAL::parameters::vertex_point_map(mesh2_vpm),
-                                                                   CGAL::parameters::vertex_point_map(mesh2_vpm) );
-
-    G4SurfaceMeshCGAL* res = new G4SurfaceMeshCGAL();
-    res->sm = sm2;
-
-    return res;
-}
-
-G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::UnionConsecutive(G4SurfaceMeshCGAL* s1) {
-
-    Surface_mesh_3 sm2 = Surface_mesh_3();
-
-    Exact_point_map mesh1_exact_points = sm.add_property_map<vertex_descriptor,EPECK::Point_3>("v:exact_point").first;
-    Exact_point_map mesh2_exact_points = s1->sm.add_property_map<vertex_descriptor,EPECK::Point_3>("v:exact_point").first;
-    Exact_point_map mesh3_exact_points = s1->sm.add_property_map<vertex_descriptor,EPECK::Point_3>("v:exact_point").first;
-
-    Exact_vertex_point_map mesh1_vpm(mesh1_exact_points, sm);
-    Exact_vertex_point_map mesh2_vpm(mesh2_exact_points, s1->sm);
-    Exact_vertex_point_map mesh3_vpm(mesh2_exact_points, s1->sm);
-
-    CGAL::Polygon_mesh_processing::corefine_and_compute_union(sm,
-                                                              s1->sm,
-                                                              sm2,
-                                                              CGAL::parameters::vertex_point_map(mesh1_vpm),
-                                                              CGAL::parameters::vertex_point_map(mesh2_vpm),
-                                                              CGAL::parameters::vertex_point_map(mesh2_vpm) );
-
-    G4SurfaceMeshCGAL* res = new G4SurfaceMeshCGAL();
-    res->sm = sm2;
-
-    return res;
-}
-
-G4SurfaceMeshCGAL* G4SurfaceMeshCGAL::IntersectionConsecutive(G4SurfaceMeshCGAL* s1) {
-
-    Surface_mesh_3 sm2 = Surface_mesh_3();
-
-    Exact_point_map mesh1_exact_points = sm.add_property_map<vertex_descriptor,EPECK::Point_3>("v:exact_point").first;
-    Exact_point_map mesh2_exact_points = s1->sm.add_property_map<vertex_descriptor,EPECK::Point_3>("v:exact_point").first;
-    Exact_point_map mesh3_exact_points = s1->sm.add_property_map<vertex_descriptor,EPECK::Point_3>("v:exact_point").first;
-
-    Exact_vertex_point_map mesh1_vpm(mesh1_exact_points, sm);
-    Exact_vertex_point_map mesh2_vpm(mesh2_exact_points, s1->sm);
-    Exact_vertex_point_map mesh3_vpm(mesh2_exact_points, s1->sm);
-
-    CGAL::Polygon_mesh_processing::corefine_and_compute_intersection(sm,
-                                                                     s1->sm,
-                                                                     sm2,
-                                                                     CGAL::parameters::vertex_point_map(mesh1_vpm),
-                                                                     CGAL::parameters::vertex_point_map(mesh2_vpm),
-                                                                     CGAL::parameters::vertex_point_map(mesh2_vpm) );
-
-    G4SurfaceMeshCGAL* res = new G4SurfaceMeshCGAL();
-    res->sm = sm2;
-
-    return res;
-}
-*/
 
 void G4SurfaceMeshCGAL::Translate(G4double dx, G4double dy, G4double dz){
   auto tr3 = Vector_3(dx,dy,dz);

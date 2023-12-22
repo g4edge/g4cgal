@@ -94,22 +94,26 @@ G4SurfaceMeshCGAL* G4HalfSpaceZone::GetSurfaceMesh() const {
             auto sm2 =  op.second->GetSurfaceMesh();
             G4cout << "hs intersection " << sm2->NumberOfVertices() << " " << sm2->NumberOfFaces() << G4endl;
             if (first) {
-                sm1 = sm1->Union(sm2);
+                G4bool valid = false;
+                sm1 = sm1->Union(sm2,valid);
                 first = false;
             }
             else {
-                sm1 = sm1->Intersection(sm2);
+                G4bool valid = false;
+                sm1 = sm1->Intersection(sm2, valid);
             }
         }
         else if(op.first == subtraction) {
             auto sm2 = op.second->GetSurfaceMesh();
             G4cout << "hs subtraction " << sm2->NumberOfVertices() << " " << sm2->NumberOfFaces() << G4endl;
             if (first) {
-                sm1 = sm1->Union(sm2);
+                G4bool valid = false;
+                sm1 = sm1->Union(sm2, valid);
                 first = false;
             }
             else {
-                sm1 = sm1->Subtraction(sm2);
+                G4bool valid = false;
+                sm1 = sm1->Subtraction(sm2, valid);
             }
         }
     }

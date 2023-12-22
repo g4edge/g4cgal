@@ -66,8 +66,6 @@ typedef Vector_3_EPECK Vector_3;
 typedef Aff_transformation_3_EPECK Aff_transformation_3;
 typedef Point_3_EPECK Point_3;
 typedef boost::graph_traits<Surface_mesh_3>::vertex_descriptor vertex_descriptor;
-// typedef Surface_mesh_3::Property_map<vertex_descriptor, EPECK::Point_3> Exact_point_map;
-
 
 // A modifier creating a triangle with the incremental builder.
 template <class HDS>
@@ -111,47 +109,6 @@ private:
     Surface_mesh_3 *sm;
 };
 
-/*
-struct Exact_vertex_point_map
-{
-    // typedef for the property map
-    typedef boost::property_traits<Exact_point_map>::value_type value_type;
-    typedef boost::property_traits<Exact_point_map>::reference reference;
-    typedef boost::property_traits<Exact_point_map>::key_type key_type;
-    typedef boost::read_write_property_map_tag category;
-    // exterior references
-    Exact_point_map exact_point_map;
-    Surface_mesh_3* tm_ptr;
-    // Converters
-    CGAL::Cartesian_converter<EPICK, EPECK> to_exact;
-    CGAL::Cartesian_converter<EPECK, EPICK> to_input;
-    Exact_vertex_point_map()
-            : tm_ptr(nullptr)
-    {}
-    Exact_vertex_point_map(const Exact_point_map& ep, Surface_mesh_3& tm)
-            : exact_point_map(ep)
-            , tm_ptr(&tm)
-    {
-        for (Surface_mesh_3::Vertex_index v : vertices(tm))
-            exact_point_map[v]=to_exact(tm.point(v));
-    }
-    friend
-    reference get(const Exact_vertex_point_map& map, key_type k)
-    {
-        CGAL_precondition(map.tm_ptr!=nullptr);
-        return map.exact_point_map[k];
-    }
-    friend
-    void put(const Exact_vertex_point_map& map, key_type k, const EPECK::Point_3& p)
-    {
-        CGAL_precondition(map.tm_ptr!=nullptr);
-        map.exact_point_map[k]=p;
-        // create the input point from the exact one
-        map.tm_ptr->point(k)=map.to_input(p);
-    }
-};
-*/
-
 #pragma GCC diagnostic pop
 
 #include "G4VSurfaceMesh.hh"
@@ -176,15 +133,9 @@ public:
   Nef_polyhedron_3_ECER GetCGALNef_polyhedron_3_ECER();
   Polyhedron_3_ECER GetCGALPolyhedron_3_ECER();
 
-  G4SurfaceMeshCGAL* Subtraction(G4SurfaceMeshCGAL* surfaceMesh);
-  G4SurfaceMeshCGAL* Union(G4SurfaceMeshCGAL* surfaceMesh);
-  G4SurfaceMeshCGAL* Intersection(G4SurfaceMeshCGAL* surfaceMesh);
-
-  /*
-  G4SurfaceMeshCGAL* SubtractionConsecutive(G4SurfaceMeshCGAL* surfaceMesh);
-  G4SurfaceMeshCGAL* UnionConsecutive(G4SurfaceMeshCGAL* surfaceMesh);
-  G4SurfaceMeshCGAL* IntersectionConsecutive(G4SurfaceMeshCGAL* surfaceMesh);
-  */
+  G4SurfaceMeshCGAL* Subtraction(G4SurfaceMeshCGAL* surfaceMesh, G4bool &valid);
+  G4SurfaceMeshCGAL* Union(G4SurfaceMeshCGAL* surfaceMesh, G4bool &valid);
+  G4SurfaceMeshCGAL* Intersection(G4SurfaceMeshCGAL* surfaceMesh, G4bool &valid);
 
   void Translate(G4double dx, G4double dy, G4double dz);
   void Translate(const G4ThreeVector &t);
