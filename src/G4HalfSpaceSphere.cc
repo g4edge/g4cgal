@@ -51,7 +51,7 @@ G4SurfaceMeshCGAL* G4HalfSpaceSphere::GetSurfaceMesh() const {
     G4Orb o = G4Orb("test",_r);
     G4Polyhedron *g4poly = o.GetPolyhedron();
     G4SurfaceMeshCGAL *sm = new G4SurfaceMeshCGAL();
-    sm->fill(g4poly);
+    sm->Fill(g4poly);
     sm->Translate(_centre);
     return sm;
 }

@@ -54,6 +54,12 @@ add_executable(half_space ${HalfSpaceSources} ${HalfSpaceHeaders})
 target_compile_options(half_space PRIVATE -Werror)
 target_link_libraries(half_space ${Geant4_LIBRARIES} CGAL::CGAL g4cgal)
 
+file(GLOB SurfaceMeshSources ${PROJECT_SOURCE_DIR}/test/surface_mesh/*cc)
+file(GLOB SurfaceMeshHeaders ${PROJECT_SOURCE_DIR}/test/surface_mesh/*hh)
+add_executable(surface_mesh ${SurfaceMeshSources} ${SurfaceMeshHeaders})
+target_compile_options(surface_mesh PRIVATE -Werror)
+target_link_libraries(surface_mesh ${Geant4_LIBRARIES} CGAL::CGAL g4cgal)
+
 add_executable(cgal ${PROJECT_SOURCE_DIR}/test/cgal/cgal.cc)
 target_compile_options(cgal PRIVATE -Werror)
 target_link_libraries(cgal ${Geant4_LIBRARIES} CGAL::CGAL g4cgal)

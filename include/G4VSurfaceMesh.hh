@@ -11,7 +11,7 @@ class G4VSurfaceMesh
 public:
   G4VSurfaceMesh();
   virtual ~G4VSurfaceMesh();
-  virtual void fill(G4Polyhedron* polyIn);
+  virtual void Fill(G4Polyhedron* polyIn);
   virtual G4Polyhedron* GetG4Polyhedron();
   virtual G4PolyhedronArbitrary* GetPolyhedronArbitrary();
   virtual G4int AddVertex(double x, double y, double z) = 0;

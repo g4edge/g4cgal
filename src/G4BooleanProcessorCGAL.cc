@@ -16,8 +16,8 @@ G4PolyhedronArbitrary* G4BooleanProcessorCGAL::Intersection(G4Polyhedron* p1, G4
   G4SurfaceMeshCGAL* sm1 = new G4SurfaceMeshCGAL();
   G4SurfaceMeshCGAL* sm2 = new G4SurfaceMeshCGAL();
 
-  sm1->fill(p1);
-  sm2->fill(p2);
+  sm1->Fill(p1);
+  sm2->Fill(p2);
 
   G4bool valid = false;
   G4SurfaceMeshCGAL* sm3 = sm1->Intersection(sm2, valid);
@@ -41,8 +41,8 @@ G4PolyhedronArbitrary* G4BooleanProcessorCGAL::Union(G4Polyhedron* p1, G4Polyhed
   G4SurfaceMeshCGAL* sm1 = new G4SurfaceMeshCGAL();
   G4SurfaceMeshCGAL* sm2 = new G4SurfaceMeshCGAL();
 
-  sm1->fill(p1);
-  sm2->fill(p2);
+  sm1->Fill(p1);
+  sm2->Fill(p2);
 
   G4bool valid = false;
   G4SurfaceMeshCGAL* sm3 = sm1->Union(sm2, valid);
@@ -64,8 +64,8 @@ G4PolyhedronArbitrary* G4BooleanProcessorCGAL::Subtraction(G4Polyhedron* p1, G4P
   G4SurfaceMeshCGAL* sm1 = new G4SurfaceMeshCGAL();
   G4SurfaceMeshCGAL* sm2 = new G4SurfaceMeshCGAL();
 
-  sm1->fill(p1);
-  sm2->fill(p2);
+  sm1->Fill(p1);
+  sm2->Fill(p2);
 
   G4bool valid = false;
   G4SurfaceMeshCGAL* sm3 = sm1->Subtraction(sm2, valid);
@@ -212,7 +212,7 @@ G4SurfaceMeshCGAL* G4BooleanProcessorCGAL::ProcessSurfaceMesh(const G4VSolid *bs
 #endif
 
     auto sm = new G4SurfaceMeshCGAL();
-    sm->fill(bs->GetPolyhedron());
+    sm->Fill(bs->GetPolyhedron());
     return sm;
   }
 }

@@ -44,7 +44,7 @@ G4SurfaceMeshCGAL::G4SurfaceMeshCGAL(Nef_polyhedron_3_ECER* nefIn) {
   Surface_mesh_3_ECER smECER;
   nefIn->convert_to_polyhedron(phECER);
   CGAL::copy_face_graph(phECER, smECER);
-  fill(smECER);
+  Fill(smECER);
 }
 
 G4SurfaceMeshCGAL::G4SurfaceMeshCGAL(Nef_polyhedron_3_ECER& nefIn) {
@@ -52,24 +52,24 @@ G4SurfaceMeshCGAL::G4SurfaceMeshCGAL(Nef_polyhedron_3_ECER& nefIn) {
   nefIn.convert_to_polyhedron(phECER);
   Surface_mesh_3_ECER smECER;
   CGAL::copy_face_graph(phECER, smECER);
-  fill(smECER);
+  Fill(smECER);
 }
 
 G4SurfaceMeshCGAL::~G4SurfaceMeshCGAL() {}
 
-void G4SurfaceMeshCGAL::fill(G4Polyhedron* polyIn)
+void G4SurfaceMeshCGAL::Fill(G4Polyhedron* polyIn)
 {
-  G4VSurfaceMesh::fill(polyIn);
+  G4VSurfaceMesh::Fill(polyIn);
   CGAL::Polygon_mesh_processing::triangulate_faces(sm);
 }
 
-void G4SurfaceMeshCGAL::fill(Polyhedron_3_ECER& phIn) {
+void G4SurfaceMeshCGAL::Fill(Polyhedron_3_ECER& phIn) {
   Surface_mesh_3_ECER smECER;
   CGAL::copy_face_graph(phIn, smECER);
-  fill(smECER);
+  Fill(smECER);
 }
 
-void G4SurfaceMeshCGAL::fill(Surface_mesh_3_ECER& smIn)
+void G4SurfaceMeshCGAL::Fill(Surface_mesh_3_ECER& smIn)
 {
   Point_3_ECER p;
   for (Surface_mesh_3_ECER::Vertex_index vd : smIn.vertices()) {

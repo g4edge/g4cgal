@@ -123,10 +123,10 @@ public:
   G4SurfaceMeshCGAL(Nef_polyhedron_3_ECER* nefIn);
   G4SurfaceMeshCGAL(Nef_polyhedron_3_ECER& nefIn);
   ~G4SurfaceMeshCGAL();
-  void fill(G4Polyhedron* polyIn);
+  void Fill(G4Polyhedron* polyIn);
   //void fill(G4TessellatedSolid* tessIn);
-  void fill(Polyhedron_3_ECER& phECER);
-  void fill(Surface_mesh_3_ECER& smECER);
+  void Fill(Polyhedron_3_ECER& phECER);
+  void Fill(Surface_mesh_3_ECER& smECER);
 
   G4TessellatedSolid* GetG4TessellatedSolid();
   Surface_mesh_3 GetCGALSurface_mesh();

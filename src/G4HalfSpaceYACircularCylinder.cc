@@ -72,7 +72,7 @@ G4SurfaceMeshCGAL* G4HalfSpaceYACircularCylinder::GetSurfaceMesh() const {
     G4Tubs t = G4Tubs("test",0,_r,1000000000,0,2*M_PI*rad);
     G4Polyhedron *g4poly = t.GetPolyhedron();
     G4SurfaceMeshCGAL *sm = new G4SurfaceMeshCGAL();
-    sm->fill(g4poly);
+    sm->Fill(g4poly);
     sm->Translate(_x0, 0,_z0);
     sm->Rotate(G4ThreeVector(1,0,0), M_PI_2);
 

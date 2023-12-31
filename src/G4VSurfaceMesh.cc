@@ -7,7 +7,7 @@
 
 G4VSurfaceMesh::G4VSurfaceMesh() {}
 
-void G4VSurfaceMesh::fill(G4Polyhedron* polyIn)
+void G4VSurfaceMesh::Fill(G4Polyhedron* polyIn)
 {
   int nVert = polyIn->GetNoVertices();
   int nFacet = polyIn->GetNoFacets();
