@@ -16,6 +16,8 @@
 
 #include "G4Orb.hh"
 #include "G4DisplacedSolid.hh"
+#include "G4TessellatedSolid.hh"
+#include "G4TriangularFacet.hh"
 
 G4SurfaceMeshSolid::G4SurfaceMeshSolid()
                                        : G4VSolid("")
@@ -117,6 +119,29 @@ void G4SurfaceMeshSolid::DescribeYourselfTo(G4VGraphicsScene& scene) const {
   }
   return;
 };
+
+G4TessellatedSolid* G4SurfaceMeshSolid::GetTessellatedSolid() const {
+  auto ts = new G4TessellatedSolid();
+
+  // loop over faces
+  for(G4int i=0;i<_mesh->NumberOfFaces();i++) {
+    auto f = _mesh->GetFace(i);
+    auto v1 = _mesh->GetVertex(f[0]);
+    auto v2 = _mesh->GetVertex(f[1]);
+    auto v3 = _mesh->GetVertex(f[2]);
+
+    auto a = G4ThreeVector(v1[0], v1[1], v1[2]);
+    auto b = G4ThreeVector(v2[0], v2[1], v2[2]);
+    auto c = G4ThreeVector(v3[0], v3[1], v3[2]);
+
+    ts->AddFacet(new G4TriangularFacet(a,b,c, G4FacetVertexType::ABSOLUTE));
+  }
+
+  ts->SetSolidClosed(true);
+
+  return ts;
+};
+
 
 void G4SurfaceMeshSolid::Test(G4ThreeVector testPointIn,
                               G4ThreeVector testDirIn) {

@@ -3,6 +3,7 @@
 #include "G4NistManager.hh"
 #include "G4Box.hh"
 #include "G4Orb.hh"
+#include "G4TessellatedSolid.hh"
 
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
@@ -20,7 +21,7 @@ G4VPhysicalVolume* SurfaceMesh_DetectorConstruction::Construct() {
 
   //////////////////////////////
   // Envelope parameters
-  G4double env_sizeXY = 20*cm, env_sizeZ = 30*cm;
+  G4double env_sizeXY = 30*cm, env_sizeZ = 30*cm;
   G4Material* env_mat = nist->FindOrBuildMaterial("G4_Al");
 
   //////////////////////////////
@@ -54,10 +55,11 @@ G4VPhysicalVolume* SurfaceMesh_DetectorConstruction::Construct() {
   auto smToTest      = new G4SurfaceMeshCGAL();
   auto smLocator     = new G4PrimitiveLocatorG4();
   smToTest->Fill(g4SolidToTest->CreatePolyhedron());
-
   auto smSolidToTest = new G4SurfaceMeshSolid("smTestSolid", smToTest, smLocator);
 
-  auto logicalToTest = new G4LogicalVolume(smSolidToTest,
+  auto tsSolidToTest = smSolidToTest->GetTessellatedSolid();
+
+  auto logicalToTest = new G4LogicalVolume(tsSolidToTest,
                                            env_mat,
                                            "logicalToTest");
 

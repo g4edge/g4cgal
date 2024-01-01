@@ -12,6 +12,7 @@
 
 class G4VSurfaceMesh;
 class G4VPrimitiveLocator;
+class G4TessellatedSolid;
 
 class G4SurfaceMeshSolid : public G4VSolid {
 public:
@@ -41,9 +42,13 @@ public:
   virtual std::ostream& StreamInfo(std::ostream& os) const  override;
   virtual void DescribeYourselfTo (G4VGraphicsScene& scene) const override;
 
+  virtual G4TessellatedSolid* GetTessellatedSolid() const;
+
   virtual void Test(G4ThreeVector testPoint,
                     G4ThreeVector testDir = G4ThreeVector());
   virtual void TestRandomInside();
+
+
 private:
   G4VSurfaceMesh *_mesh;
   G4VPrimitiveLocator *_pl;
