@@ -12,6 +12,7 @@
 #include "G4SurfaceMeshCGAL.hh"
 #include "G4SurfaceMeshSolid.hh"
 #include "G4PrimitiveLocatorG4.hh"
+#include "G4PrimitiveLocatorCGAL.hh"
 #include "G4SolidTrackingTimer.hh"
 
 G4VPhysicalVolume* SurfaceMesh_DetectorConstruction::Construct() {
@@ -50,17 +51,18 @@ G4VPhysicalVolume* SurfaceMesh_DetectorConstruction::Construct() {
                                      false);
 
 
-  auto g4SolidToTest = new G4Box("g4TestSolid",2*cm, 2*cm, 2*cm);
-  //auto g4SolidToTest = new G4Orb("g4TestSolid", 2*cm);
+  //auto g4SolidToTest = new G4Box("g4TestSolid",2*cm, 2*cm, 2*cm);
+  auto g4SolidToTest = new G4Orb("g4TestSolid", 2*cm);
 
   auto smToTest      = new G4SurfaceMeshCGAL();
-  auto smLocator     = new G4PrimitiveLocatorG4();
+  auto smLocatorG4   = new G4PrimitiveLocatorG4();
+  auto smLocatorCGAL = new G4PrimitiveLocatorCGAL();
   smToTest->Fill(g4SolidToTest->CreatePolyhedron());
-  auto smSolidToTest = new G4SurfaceMeshSolid("smTestSolid", smToTest, smLocator);
+  auto smSolidToTest = new G4SurfaceMeshSolid("smTestSolid", smToTest, smLocatorCGAL);
 
   auto tsSolidToTest = smSolidToTest->GetTessellatedSolid();
 
-  auto logicalToTest = new G4LogicalVolume(tsSolidToTest,
+  auto logicalToTest = new G4LogicalVolume(smSolidToTest,
                                            env_mat,
                                            "logicalToTest");
 
@@ -77,6 +79,13 @@ G4VPhysicalVolume* SurfaceMesh_DetectorConstruction::Construct() {
   //smSolidToTest->Test(G4ThreeVector(0.0*cm,0.0*cm,-5*cm),
   //                    G4ThreeVector(0,0,1));
   //smSolidToTest->TestRandomInside();
+
+  auto g4TrackingTimer = G4SolidTrackingTimer(g4SolidToTest,
+                                             -50,50,
+                                             -50,50,
+                                             -50,50);
+  g4TrackingTimer.Run(100000);
+  g4TrackingTimer.Print(1);
 
   auto smTrackingTimer = G4SolidTrackingTimer(smSolidToTest,
                                               -50,50,
