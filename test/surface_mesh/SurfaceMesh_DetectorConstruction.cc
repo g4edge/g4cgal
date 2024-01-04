@@ -84,21 +84,21 @@ G4VPhysicalVolume* SurfaceMesh_DetectorConstruction::Construct() {
                                              -50,50,
                                              -50,50,
                                              -50,50);
-  g4TrackingTimer.Run(100000);
+  g4TrackingTimer.Run(1000000);
   g4TrackingTimer.Print(1);
 
   auto smTrackingTimer = G4SolidTrackingTimer(smSolidToTest,
                                               -50,50,
                                               -50,50,
                                               -50,50);
-  smTrackingTimer.Run(100000);
+  smTrackingTimer.Run(1000000);
   smTrackingTimer.Print(1);
 
   auto tsTrackingTimer = G4SolidTrackingTimer(tsSolidToTest,
                                               -50,50,
                                               -50,50,
                                               -50,50);
-  tsTrackingTimer.Run(100000);
+  tsTrackingTimer.Run(1000000);
   tsTrackingTimer.Print(1);
 
   return physWorld;

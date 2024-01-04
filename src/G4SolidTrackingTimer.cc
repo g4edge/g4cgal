@@ -53,7 +53,7 @@ G4double G4SolidTrackingTimer::Inside(G4int nTrials) {
   }
 
   auto end = std::chrono::high_resolution_clock::now();
-  return std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count()/nTrials/1000.0;
+  return std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count()/nTrials;
 }
 
 G4double G4SolidTrackingTimer::DistanceToIn(G4int nTrials) {
@@ -66,7 +66,7 @@ G4double G4SolidTrackingTimer::DistanceToIn(G4int nTrials) {
   }
 
   auto end = std::chrono::high_resolution_clock::now();
-  return std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count()/nTrials/1000.0;
+  return std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count()/nTrials;
 }
 
 G4double G4SolidTrackingTimer::DistanceToInDir(G4int nTrials) {
@@ -80,7 +80,7 @@ G4double G4SolidTrackingTimer::DistanceToInDir(G4int nTrials) {
   }
 
   auto end = std::chrono::high_resolution_clock::now();
-  return std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count()/nTrials/1000.0;
+  return std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count()/nTrials;
 }
 
 G4double G4SolidTrackingTimer::DistanceToOut(G4int nTrials) {
@@ -93,7 +93,7 @@ G4double G4SolidTrackingTimer::DistanceToOut(G4int nTrials) {
   }
 
   auto end = std::chrono::high_resolution_clock::now();
-  return std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count()/nTrials/1000.0;
+  return std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count()/nTrials;
 }
 
 G4double G4SolidTrackingTimer::DistanceToOutDir(G4int nTrials) {
@@ -107,14 +107,14 @@ G4double G4SolidTrackingTimer::DistanceToOutDir(G4int nTrials) {
   }
 
   auto end = std::chrono::high_resolution_clock::now();
-  return std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count()/nTrials/1000.0;
+  return std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count()/nTrials;
 }
 
 void G4SolidTrackingTimer::Print(G4int iCount,...) {
   va_list args;
   va_start(args, iCount);
 
-  G4cout << "inside (ms/call) " << _inside << G4endl;
+  G4cout << "inside (ns/call) " << _inside << G4endl;
   G4cout << "distToIn         " << _distanceToIn << G4endl;
   G4cout << "distToInDir      " << _distanceToInDir << G4endl;
   G4cout << "distToOut        " << _distanceToOut << G4endl;

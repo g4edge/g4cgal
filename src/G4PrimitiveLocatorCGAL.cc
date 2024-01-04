@@ -30,14 +30,13 @@ void G4PrimitiveLocatorCGAL::Build(G4VSurfaceMesh *sm, G4double kCarToleranceIn)
 
   _tree = Tree(_facets.begin(),_facets.end());
   _tree.build();
+  _tree.accelerate_distance_queries();
   G4cout << "G4PrimitiveLocatorCGAL::build> finished" << G4endl;
 
   return;
 }
 double G4PrimitiveLocatorCGAL::Distance(const G4ThreeVector &pointG4) const {
-  Point point(pointG4.x(), pointG4.y(), pointG4.z());
-  FT sqd = sqrt(_tree.squared_distance(point));
-  return sqd;
+  return sqrt(_tree.squared_distance(Point(pointG4.x(), pointG4.y(), pointG4.z())));
 }
 
 G4int G4PrimitiveLocatorCGAL::ClosestPrimitive(const G4ThreeVector &point) const {
@@ -88,36 +87,25 @@ EInside G4PrimitiveLocatorCGAL::Inside(const G4ThreeVector &point) const {
   auto v0G4 = G4ThreeVector((v0.x()+v1.x()+v2.x())/3,
                             (v0.y()+v1.y()+v2.y())/3,
                             (v0.z()+v1.z()+v2.z())/3);
-  G4ThreeVector dirG4 = (v0G4-point);
-  dirG4 = dirG4/dirG4.mag();
+  G4ThreeVector dirG4 = (v0G4-point)/(v0G4-point).mag();
 
-  Point p(point.x(), point.y(), point.z());
-  Direction d(dirG4.x(), dirG4.y(), dirG4.z());
-  Ray ray(p,d);
-
-  auto ip = _tree.first_intersection(ray);
+  auto ip = _tree.first_intersection(Ray(Point(point.x(), point.y(), point.z()),
+                                         Direction(dirG4.x(), dirG4.y(), dirG4.z())));
 
   auto r = boost::get<Point>(&(ip->first));
   auto pid = ip->second;
 
   auto n = pid ->supporting_plane().orthogonal_vector();
 
-  auto ipG4 = G4ThreeVector(r->x(),
-                            r->y(),
-                            r->z());
-  auto normG4 = G4ThreeVector(n.x(),
-                              n.y(),
-                              n.z());
-
-  auto dProj = (ipG4-point).dot(normG4);
+  auto dProj = (G4ThreeVector(r->x(),r->y(),r->z())-point).dot(G4ThreeVector(n.x(),n.y(),n.z()));
 
   auto retVal = kOutside;
   if(fabs(dProj) <= kCarTolerance/2.0)
-    retVal = kSurface;
+    return kSurface;
   else if(dProj > kCarTolerance/2.0)
-    retVal =  kInside;
+    return kInside;
   else
-    retVal =  kOutside;
+    return kOutside;
 
   // G4cout << "G4PrimitiveLocatorG4::inside> ret=" << retVal << G4endl;
   return retVal;
